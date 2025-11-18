@@ -3,7 +3,7 @@
 # Genre
 Survival horror
 
-# Beschrijving (nog te updaten, specifieren)
+# Beschrijving (nog te updaten, specifieren van het thema (waar))
 Je bent een fotograaf die geruchten heeft gehoord over een oud gebouw. Je moet fotos maken van interessante dingen.
 Je moet je navigeren door donkere kamers terwijl er een entity je achterna loopt. Het is zo donker dat je bijna niets ziet. Enkel door de flash van je fototoestel zie je waar je loopt.
 Vind de interessante dingen, maak er fotos van en ontsnap van de entity.
