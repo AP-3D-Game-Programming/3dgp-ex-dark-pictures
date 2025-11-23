@@ -39,3 +39,6 @@
 ## Einde van het Spel
 - **De speler wint** wanneer alle clues verzameld zijn en hij via zijn startpunt weet te ontsnappen.
 - **De AI Entity wint** wanneer de speler wordt gepakt terwijl hij geen beschikbare flash meer heeft.
+# Foto's
+Map:
+![Map](./map.jpg)
