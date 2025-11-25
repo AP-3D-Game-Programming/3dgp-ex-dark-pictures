@@ -66,5 +66,5 @@
     "explorer.fileNesting.patterns": {
         "*.sln": "*.csproj",
     },
-    "dotnet.defaultSolution": "dark_picture.sln"
+    "dotnet.defaultSolution": "dark_pictures.sln"
 }

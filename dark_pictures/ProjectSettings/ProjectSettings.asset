@@ -4,7 +4,7 @@
 PlayerSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 28
-  productGUID: 66ce1fe8cec0a2f4cbc10ef015d145a6
+  productGUID: c6ab53da0f224304c9687dd10a86d33e
   AndroidProfiler: 0
   AndroidFilterTouchesWhenObscured: 0
   AndroidEnableSustainedPerformanceMode: 0
@@ -13,7 +13,7 @@ PlayerSettings:
   useOnDemandResources: 0
   accelerometerFrequency: 60
   companyName: DefaultCompany
-  productName: dark_picture
+  productName: dark_pictures
   defaultCursor: {fileID: 0}
   cursorHotspot: {x: 0, y: 0}
   m_SplashScreenBackgroundColor: {r: 0.13725491, g: 0.12156863, b: 0.1254902, a: 1}
@@ -843,14 +843,14 @@ PlayerSettings:
   editorAssembliesCompatibilityLevel: 1
   m_RenderingPath: 1
   m_MobileRenderingPath: 1
-  metroPackageName: dark_picture
+  metroPackageName: dark_pictures
   metroPackageVersion: 
   metroCertificatePath: 
   metroCertificatePassword: 
   metroCertificateSubject: 
   metroCertificateIssuer: 
   metroCertificateNotAfter: 0000000000000000
-  metroApplicationDescription: dark_picture
+  metroApplicationDescription: dark_pictures
   wsaImages: {}
   metroTileShortName: 
   metroTileShowName: 0
@@ -921,10 +921,10 @@ PlayerSettings:
   captureStartupLogs: {}
   activeInputHandler: 1
   windowsGamepadBackendHint: 0
-  cloudProjectId: c2507a1d-4a52-40f4-bf48-deb9faeffd77
+  cloudProjectId: 03bb9ed8-bd70-4ea3-b3d8-f2dcce0a9a72
   framebufferDepthMemorylessMode: 0
   qualitySettingsNames: []
-  projectName: dark_picture
+  projectName: dark_pictures
   organizationId: unity_88150ecad58e0dc83e28
   cloudEnabled: 0
   legacyClampBlendShapeWeights: 0
