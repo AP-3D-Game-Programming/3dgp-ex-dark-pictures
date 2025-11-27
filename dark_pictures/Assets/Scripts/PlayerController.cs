@@ -35,7 +35,7 @@ public class PlayerController : MonoBehaviour
     private float xRot = 0f;
     private bool isCrouching = false;
     private bool wantsToCrouch = false;
-    private bool forcedCrouch = false; // Gedwongen crouch door obstakels
+    private bool forcedCrouch = false;
     private Vector3 camDefaultLocalPos;
     private float currentHeight;
     private float targetHeight;
@@ -78,39 +78,31 @@ public class PlayerController : MonoBehaviour
 
         wantsToCrouch = kb.cKey.isPressed;
 
-        // Check of er ruimte is om te staan (raycast van midden naar boven, detecteert ALLES)
         bool canStand = !Physics.Raycast(transform.position + Vector3.up * crouchHeight * 0.5f, Vector3.up, normalHeight - crouchHeight);
 
-        // Als er geen ruimte is, dwingen we crouch
         if (!canStand && !forcedCrouch)
         {
             forcedCrouch = true;
         }
-        // Als we willen opstaan EN er is ruimte, we stoppen met gedwongen crouch
+
         else if (canStand && !wantsToCrouch)
         {
             forcedCrouch = false;
         }
 
-        // Bepaal of we echt gaan crouchen
         bool shouldCrouch = wantsToCrouch || forcedCrouch;
 
-        // Update target height
         targetHeight = shouldCrouch ? crouchHeight : normalHeight;
 
-        // Smooth height transition (maar niet te snel zodat we niet bouncy worden)
         currentHeight = Mathf.Lerp(currentHeight, targetHeight, Time.deltaTime * crouchTransitionSpeed * 0.5f);
         isCrouching = shouldCrouch;
 
-        // Update CharacterController height en center
         controller.height = currentHeight;
         controller.center = new Vector3(0, currentHeight / 2f, 0);
 
-        // Smooth camera movement (minder snel om jiggle te voorkomen)
         Vector3 targetCamPos = camDefaultLocalPos + (shouldCrouch ? new Vector3(0, cameraCrouchOffset, 0) : Vector3.zero);
         cam.transform.localPosition = Vector3.Lerp(cam.transform.localPosition, targetCamPos, Time.deltaTime * cameraTransitionSpeed * 0.4f);
 
-        // Smooth bean model
         if (beanModel != null)
         {
             Vector3 modelTargetPos = shouldCrouch ? new Vector3(0, beanCrouchOffset, 0) : Vector3.zero;
@@ -122,7 +114,6 @@ public class PlayerController : MonoBehaviour
     {
         isGrounded = controller.isGrounded;
 
-        // Minder aggressieve grounding
         if (isGrounded && velocity.y < 0)
             velocity.y = -0.5f;
 
