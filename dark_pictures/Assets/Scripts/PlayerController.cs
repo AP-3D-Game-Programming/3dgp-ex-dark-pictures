@@ -58,6 +58,13 @@ public class PlayerController : MonoBehaviour
         HandleMovement();
     }
 
+    /// <summary>
+    /// Handles the player's camera and character rotation based on mouse input.
+    /// </summary>
+    /// <remarks>
+    /// This method reads the current mouse movement to adjust the camera's vertical rotation  and
+    /// the character's horizontal rotation.
+    /// </remarks>
     void HandleLook()
     {
         if (Mouse.current == null) return;
@@ -71,78 +78,90 @@ public class PlayerController : MonoBehaviour
         transform.Rotate(Vector3.up * mouseDelta.x);
     }
 
-    void HandleCrouch()
-    {
-        var kb = Keyboard.current;
-        if (kb == null) return;
 
-        wantsToCrouch = kb.cKey.isPressed;
+	/// <summary>
+	/// Handles the crouching behavior of the player, including transitioning between crouching and standing states.
+	/// </summary>
+	/// <remarks>
+	/// Crouching makes your character shorter and slower.
+	/// You can crouch by pressing the 'C' key or the left Control key.
+	/// </remarks>
+	void HandleCrouch()
+	{
+		var kb = Keyboard.current;
+		if (kb == null) return;
 
-        bool canStand = !Physics.Raycast(transform.position + Vector3.up * crouchHeight * 0.5f, Vector3.up, normalHeight - crouchHeight);
+		wantsToCrouch = kb.cKey.isPressed || kb.leftCtrlKey.isPressed;
 
-        if (!canStand && !forcedCrouch)
-        {
-            forcedCrouch = true;
-        }
+		bool canStand = !Physics.Raycast(transform.position + Vector3.up * 0.5f, Vector3.up, normalHeight - 0.5f);
 
-        else if (canStand && !wantsToCrouch)
-        {
-            forcedCrouch = false;
-        }
+		if (!canStand && !forcedCrouch) forcedCrouch = true;
+		else if (canStand && !wantsToCrouch) forcedCrouch = false;
 
-        bool shouldCrouch = wantsToCrouch || forcedCrouch;
+		bool shouldCrouch = wantsToCrouch || forcedCrouch;
+		isCrouching = shouldCrouch;
+		targetHeight = shouldCrouch ? crouchHeight : normalHeight;
 
-        targetHeight = shouldCrouch ? crouchHeight : normalHeight;
+		currentHeight = Mathf.MoveTowards(currentHeight, targetHeight, Time.deltaTime * crouchTransitionSpeed);
 
-        currentHeight = Mathf.Lerp(currentHeight, targetHeight, Time.deltaTime * crouchTransitionSpeed * 0.5f);
-        isCrouching = shouldCrouch;
+		controller.height = currentHeight;
+		controller.center = new Vector3(0, currentHeight * 0.5f, 0);
 
-        controller.height = currentHeight;
-        controller.center = new Vector3(0, currentHeight / 2f, 0);
+		float crouchPercent = Mathf.InverseLerp(normalHeight, crouchHeight, currentHeight);
 
-        Vector3 targetCamPos = camDefaultLocalPos + (shouldCrouch ? new Vector3(0, cameraCrouchOffset, 0) : Vector3.zero);
-        cam.transform.localPosition = Vector3.Lerp(cam.transform.localPosition, targetCamPos, Time.deltaTime * cameraTransitionSpeed * 0.4f);
+		Vector3 crouchCamPos = camDefaultLocalPos + new Vector3(0, cameraCrouchOffset, 0);
+		cam.transform.localPosition = Vector3.Lerp(camDefaultLocalPos, crouchCamPos, crouchPercent);
 
-        if (beanModel != null)
-        {
-            Vector3 modelTargetPos = shouldCrouch ? new Vector3(0, beanCrouchOffset, 0) : Vector3.zero;
-            beanModel.localPosition = Vector3.Lerp(beanModel.localPosition, modelTargetPos, Time.deltaTime * beanTransitionSpeed * 0.5f);
-        }
-    }
+		if (beanModel != null)
+		{
+			Vector3 crouchBeanPos = new Vector3(0, beanCrouchOffset, 0);
+			beanModel.localPosition = Vector3.Lerp(Vector3.zero, crouchBeanPos, crouchPercent);
+		}
+	}
 
-    void HandleMovement()
-    {
-        isGrounded = controller.isGrounded;
+	/// <summary>
+	/// Handles player movement, including walking, sprinting, crouching, and jumping.
+	/// </summary>
+	/// <remarks>
+	/// This method processes keyboard input to determine movement direction and speed,  applies
+	/// gravity, and updates the player's position accordingly. Movement is  constrained by the player's grounded state,
+	/// crouching status, and gravity effects.
+	/// </remarks>
+	void HandleMovement()
+	{
+		isGrounded = controller.isGrounded;
 
-        if (isGrounded && velocity.y < 0)
-            velocity.y = -2f;
+		if (isGrounded && velocity.y < 0)
+			velocity.y = -2f;
 
-        Vector2 input = Vector2.zero;
-        var kb = Keyboard.current;
-        if (kb == null) return;
+		Vector2 input = Vector2.zero;
+		var kb = Keyboard.current;
+		if (kb == null) return;
 
-        if (kb.wKey.isPressed) input.y += 1;
-        if (kb.sKey.isPressed) input.y -= 1;
-        if (kb.dKey.isPressed) input.x += 1;
-        if (kb.aKey.isPressed) input.x -= 1;
+		if (kb.wKey.isPressed) input.y += 1;
+		if (kb.sKey.isPressed) input.y -= 1;
+		if (kb.dKey.isPressed) input.x += 1;
+		if (kb.aKey.isPressed) input.x -= 1;
 
-        input = input.normalized;
+		input = input.normalized;
 
-        Vector3 move = transform.right * input.x + transform.forward * input.y;
+		Vector3 move = transform.right * input.x + transform.forward * input.y;
 
-        float speed = isCrouching ? crouchSpeed :
-                      kb.leftShiftKey.isPressed ? sprintSpeed :
-                      moveSpeed;
+		// If crouching -> Crouch Speed
+		// Else if Shift held -> Sprint Speed
+		// Else -> Walk Speed
+		float speed = isCrouching ? crouchSpeed :
+					  kb.leftShiftKey.isPressed ? sprintSpeed :
+					  moveSpeed;
 
-        controller.Move(move * speed * Time.deltaTime);
+		controller.Move(move * speed * Time.deltaTime);
 
-        if (kb !=null && kb.spaceKey.wasPressedThisFrame && isGrounded && !isCrouching)
-            velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
+		// JUMP (Only if grounded)
+		if (kb.spaceKey.wasPressedThisFrame && isGrounded)
+			velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
 
-        velocity.y += gravity * Time.deltaTime;
-
-		Vector3 finalMovement = (move * speed) + velocity;
+		velocity.y += gravity * Time.deltaTime;
 
 		controller.Move(velocity * Time.deltaTime);
-    }
+	}
 }
