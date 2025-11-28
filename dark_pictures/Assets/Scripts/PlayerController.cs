@@ -115,7 +115,7 @@ public class PlayerController : MonoBehaviour
         isGrounded = controller.isGrounded;
 
         if (isGrounded && velocity.y < 0)
-            velocity.y = -0.5f;
+            velocity.y = -2f;
 
         Vector2 input = Vector2.zero;
         var kb = Keyboard.current;
@@ -136,10 +136,13 @@ public class PlayerController : MonoBehaviour
 
         controller.Move(move * speed * Time.deltaTime);
 
-        if (kb.spaceKey.wasPressedThisFrame && isGrounded && !isCrouching)
+        if (kb !=null && kb.spaceKey.wasPressedThisFrame && isGrounded && !isCrouching)
             velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
 
         velocity.y += gravity * Time.deltaTime;
-        controller.Move(velocity * Time.deltaTime);
+
+		Vector3 finalMovement = (move * speed) + velocity;
+
+		controller.Move(velocity * Time.deltaTime);
     }
 }
