@@ -19,6 +19,8 @@ public class CameraFlash : MonoBehaviour
 
 	private float nextFlashTime = 0f;
 
+	[SerializeField] GameManager gameManager;
+
 	void Start()
 	{
 		if (flashLight != null) flashLight.intensity = 0f;
@@ -26,6 +28,8 @@ public class CameraFlash : MonoBehaviour
 
 	void Update()
 	{
+		if (gameManager.isGameOver)
+			return;
 		if (Input.GetMouseButtonDown(0))
 		{
 			if (flashLight == null) return;

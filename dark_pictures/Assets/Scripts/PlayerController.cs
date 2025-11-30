@@ -3,6 +3,7 @@ using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
+	[SerializeField] GameManager gameManager;
     [Header("Movement")]
     public float moveSpeed = 5f;
     public float sprintSpeed = 8f;
@@ -53,6 +54,8 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+		if (gameManager.isGameOver)
+			return;
         HandleLook();
         HandleCrouch();
         HandleMovement();

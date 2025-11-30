@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.AI;
 using System.Collections;
+using UnityEditor.Rendering;
 
 public class EntityAI : MonoBehaviour
 {
@@ -33,6 +34,8 @@ public class EntityAI : MonoBehaviour
 	private Color originalColor;
 	private Color stunColor = Color.yellow; 
 	public float stunBrightness = 5f;
+
+	[SerializeField] GameManager gameManager;	
 
 	void Start()
 	{
@@ -252,4 +255,10 @@ public class EntityAI : MonoBehaviour
 		Gizmos.color = Color.yellow;
 		Gizmos.DrawWireSphere(transform.position, patrolRadius);
 	}
+    void OnCollisionEnter(Collision collision)
+    {
+		if (collision.gameObject.CompareTag("Player") ) {
+			gameManager.GameOver();
+        }
+    }
 }
