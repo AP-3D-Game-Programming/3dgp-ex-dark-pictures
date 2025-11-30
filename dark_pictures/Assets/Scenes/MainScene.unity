@@ -1640,7 +1640,7 @@ Light:
   m_BounceIntensity: 1
   m_ColorTemperature: 5000
   m_UseColorTemperature: 1
-  m_BoundingSphereOverride: {x: 9.316775e-39, y: 1.06902e-40, z: 1.8007902e+25, w: 1.5278844e+28}
+  m_BoundingSphereOverride: {x: 2.5902e-41, y: 2.524355e-29, z: 0, w: 231159520}
   m_UseBoundingSphereOverride: 0
   m_UseViewFrustumForShadowCasterCull: 1
   m_ForceVisible: 0
@@ -3803,7 +3803,10 @@ MonoBehaviour:
   flashLight: {fileID: 2065504214}
   flashIntensity: 30
   fadeSpeed: 30
-  flashCooldown: 2
+  flashCooldown: 5
+  stunDuration: 2
+  flashRange: 15
+  flashAngle: 60
   audioSource: {fileID: 0}
   flashSound: {fileID: 0}
 --- !u!1 &1300412236
@@ -4146,7 +4149,7 @@ Light:
   m_BounceIntensity: 1
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
-  m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 0}
+  m_BoundingSphereOverride: {x: 2.6307088e+20, y: 2.146832e+29, z: 3.09799e+32, w: 2.7403984e+17}
   m_UseBoundingSphereOverride: 0
   m_UseViewFrustumForShadowCasterCull: 1
   m_ForceVisible: 0
@@ -4852,6 +4855,7 @@ Transform:
   m_Children:
   - {fileID: 912162309}
   - {fileID: 2088749203}
+  - {fileID: 1992350359}
   - {fileID: 741894549}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -4998,14 +5002,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EntityAI
   player: {fileID: 1236016069}
   playerFlashLight: {fileID: 2065504214}
-  patrolSpeed: 3
-  chaseSpeed: 8
+  eyeRenderers:
+  - {fileID: 2090570099}
+  - {fileID: 1881150876}
+  eyeLight: {fileID: 1339204437}
+  patrolSpeed: 5
+  chaseSpeed: 11
   darkDetectionRange: 10
   lightDetectionRange: 20
   visionMask:
     serializedVersion: 2
     m_Bits: 4294967295
   patrolRadius: 50
+  stunBrightness: 5
 --- !u!195 &1676634627
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -5704,6 +5713,63 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1980924219}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &1992350358
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1992350359}
+  - component: {fileID: 1992350360}
+  m_Layer: 0
+  m_Name: NavMesh Link (3)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1992350359
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1992350358}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 17.728, y: -1.2462599, z: 1.9170799}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1636135445}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1992350360
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1992350358}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6eeb5dc026fdf4b488bc7ae0138ab719, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.AI.Navigation::Unity.AI.Navigation.NavMeshLink
+  m_SerializedVersion: 1
+  m_AgentTypeID: 0
+  m_StartPoint: {x: 0, y: 1.6949999, z: -2.5}
+  m_EndPoint: {x: 0, y: -1.6950002, z: 2.5}
+  m_StartTransform: {fileID: 0}
+  m_EndTransform: {fileID: 0}
+  m_Activated: 1
+  m_Width: 13
+  m_CostModifier: 1
+  m_IsOverridingCost: 0
+  m_Bidirectional: 0
+  m_AutoUpdatePosition: 0
+  m_Area: 2
 --- !u!1 &2041600701
 GameObject:
   m_ObjectHideFlags: 0

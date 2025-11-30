@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.AI;
+using System.Collections;
 
 public class EntityAI : MonoBehaviour
 {
@@ -7,15 +8,17 @@ public class EntityAI : MonoBehaviour
 	public Transform player;
 	public Light playerFlashLight;
 
+	[Header("Left and right eye of entity")]
+	public Renderer[] eyeRenderers;
+	public Light eyeLight;
+
 	[Header("Settings")]
 	public float patrolSpeed = 3f;
 	public float chaseSpeed = 8f;
 
 	[Header("Detection")]
-	public float darkDetectionRange = 8f;  // How close needs to be to see you in dark
-	public float lightDetectionRange = 20f; // How far it sees you when you flash
-
-	// LayerMask so it does not see through walls
+	public float darkDetectionRange = 8f;
+	public float lightDetectionRange = 20f;
 	public LayerMask visionMask;
 
 	[Header("Patrol Settings")]
@@ -24,22 +27,38 @@ public class EntityAI : MonoBehaviour
 	private NavMeshAgent agent;
 	private bool isChasing = false;
 	private Vector3 patrolDestination;
-
-	// Variable to detect if we are stuck standing still
 	private float stuckTimer = 0f;
+	private bool isStunned = false;
+
+	private Color originalColor;
+	private Color stunColor = Color.yellow; 
+	public float stunBrightness = 5f;
 
 	void Start()
 	{
 		agent = GetComponent<NavMeshAgent>();
-
 		if (visionMask == 0) visionMask = -1;
+
+		// save original eye color
+		if (eyeRenderers.Length > 0)
+		{
+			originalColor = eyeRenderers[0].material.GetColor("_EmissionColor");
+
+			if (eyeLight != null)
+			{
+				eyeLight.color = originalColor;
+				eyeLight.intensity = 2f;
+				eyeLight.range = 2f;
+			}
+		}
 
 		SetNewPatrolPoint();
 	}
 
 	void Update()
 	{
-		// Check if can see player
+		if (isStunned) return;
+
 		if (CanSeePlayer())
 		{
 			ChasePlayer();
@@ -50,23 +69,97 @@ public class EntityAI : MonoBehaviour
 		}
 	}
 
+	public void StunEntity(float duration)
+	{
+		if (isStunned) return;
+		StartCoroutine(StunRoutine(duration));
+	}
+
 	/// <summary>
-	/// Function to check if the entity can see the player
+	/// Routine to handle stunning the entity
 	/// </summary>
-	/// <returns>bool</returns>
+	/// <param name="duration"></param>
+	IEnumerator StunRoutine(float duration)
+	{
+		isStunned = true;
+
+		// last known position at stun (Where the player is right now)
+		Vector3 lastKnownPos = player.position;
+
+		agent.isStopped = true;
+		agent.velocity = Vector3.zero;
+		UpdateEyeVisuals(stunColor);
+
+		yield return new WaitForSeconds(duration);
+
+		isStunned = false;
+		agent.isStopped = false;
+		UpdateEyeVisuals(originalColor);
+
+		// If we can see the player NOW, chase them immediately.
+		if (CanSeePlayer())
+		{
+			ChasePlayer();
+		}
+		else
+		{
+			// If we CAN'T see them (they hid behind a wall), 
+			// go to where we last saw them (Investigate).
+			agent.SetDestination(lastKnownPos);
+		}
+	}
+
+	/// <summary>
+	/// Update the eye color and glow color
+	/// </summary>
+	/// <param name="targetColor"></param>
+	void UpdateEyeVisuals(Color targetColor)
+	{
+		if (eyeLight != null)
+		{
+			float maxColorComponent = targetColor.maxColorComponent;
+			if (maxColorComponent > 1f)
+			{
+				eyeLight.color = targetColor / maxColorComponent;
+			}
+			else
+				eyeLight.color = targetColor;
+		}
+
+		if (eyeRenderers != null)
+		{
+			Color finalMaterialColor = targetColor;
+
+			if (targetColor.maxColorComponent <= 1f)
+			{
+				finalMaterialColor = targetColor * stunBrightness;
+			}
+
+			foreach (Renderer r in eyeRenderers)
+			{
+				r.material.EnableKeyword("_EMISSION");
+				r.material.SetColor("_EmissionColor", finalMaterialColor);
+			}
+		}
+	}
+
+	/// <summary>
+	/// This method makes sure that the entity only chases if it sees the player, not just based on distance.
+	/// </summary>
+	/// <returns>
+	/// True if the entity can see the player, false otherwise.
+	/// </returns>
 	bool CanSeePlayer()
 	{
 		float distanceToPlayer = Vector3.Distance(transform.position, player.position);
 		float currentRange = (playerFlashLight.intensity > 1f) ? lightDetectionRange : darkDetectionRange;
 
-		// If player is out of range
 		if (distanceToPlayer > currentRange) return false;
 
 		Vector3 origin = transform.position + Vector3.up * 1.0f;
 		Vector3 target = player.position + Vector3.up * 1.0f;
 		Vector3 direction = (target - origin).normalized;
 
-		// Raycast to see if there are obstacles in the way
 		RaycastHit hit;
 		if (Physics.Raycast(origin, direction, out hit, currentRange, visionMask))
 		{
@@ -75,52 +168,38 @@ public class EntityAI : MonoBehaviour
 				return true;
 			}
 		}
-
 		return false;
 	}
 
-	/// <summary>
-	/// Initiates the chasing behavior, causing the entity to pursue the player.
-	/// </summary>
-	/// <remarks>
-	/// This method sets the entity's chasing state to active, adjusts its movement speed to the chase
-	/// speed,  and updates its destination to the player's current position.
-	/// </remarks>
 	void ChasePlayer()
 	{
 		isChasing = true;
-		stuckTimer = 0f; // Reset stuck timer when chasing
+		stuckTimer = 0f;
 		agent.speed = chaseSpeed;
 		agent.SetDestination(player.position);
 	}
 
 	/// <summary>
-	/// Initiates the patrol behavior, setting the agent to move at patrol speed and navigate to a new patrol point when
-	/// the current one is reached.
+	/// This method handles the patrolling behavior of the entity.
 	/// </summary>
 	/// <remarks>
-	/// This method sets the agent's speed to the patrol speed and ensures the agent moves to a new patrol
-	/// point once it is close to the current destination.  The agent stops chasing any targets during patrol.
+	/// This method has a stuck timer so it doesn't get stuck on obstacles. If the agent is not moving for more than 2 seconds,
+	/// it will pick a new patrol point.
 	/// </remarks>
 	void Patrol()
 	{
 		isChasing = false;
 		agent.speed = patrolSpeed;
 
-		// 1. STANDARD CHECK: Are we there?
 		if (!agent.pathPending && agent.remainingDistance < 0.5f)
 		{
 			SetNewPatrolPoint();
 			stuckTimer = 0f;
 		}
 
-		// 2. STUCK CHECK: Are we standing still but haven't reached the destination?
-		// If velocity is near zero, increase timer.
 		if (agent.velocity.sqrMagnitude < 0.1f && agent.remainingDistance > 0.5f)
 		{
 			stuckTimer += Time.deltaTime;
-
-			// If we have been stuck for 2 seconds, force a new point
 			if (stuckTimer > 2.0f)
 			{
 				SetNewPatrolPoint();
@@ -129,24 +208,20 @@ public class EntityAI : MonoBehaviour
 		}
 		else
 		{
-			// We are moving fine, reset timer
 			stuckTimer = 0f;
 		}
 	}
 
 	/// <summary>
-	/// Sets a new patrol point for the agent by selecting a random position within a specified radius  and finding the
-	/// nearest valid point on the NavMesh.
+	/// Sets a new patrol point for the agent within a specified radius.
 	/// </summary>
 	/// <remarks>
-	/// This method calculates a random point within a sphere of the specified patrol radius, centered  on
-	/// the agent's current position. It then determines the closest valid point on the NavMesh to  use as the patrol
-	/// destination. If a valid point is found, the agent's destination is updated  accordingly.
+	/// This method attempts to find a random valid position on the NavMesh (where the ai can walk) within the patrol radius.  If a
+	/// valid position is found and a complete path to it can be calculated, the entity's destination  is updated to the new
+	/// patrol point. The method performs up to 10 attempts to find a valid patrol point. This prevents it being stuck
 	/// </remarks>
 	void SetNewPatrolPoint()
 	{
-		// Try up to 10 times to find a valid point.
-		// This prevents the AI from picking a point on the roof or inside a wall and giving up.
 		for (int i = 0; i < 10; i++)
 		{
 			Vector3 randomDirection = Random.insideUnitSphere * patrolRadius;
@@ -168,15 +243,12 @@ public class EntityAI : MonoBehaviour
 		}
 	}
 
-	// DEBUG: Circles to visualize detection ranges
 	void OnDrawGizmos()
 	{
 		Gizmos.color = Color.green;
 		Gizmos.DrawWireSphere(transform.position, darkDetectionRange);
-
 		Gizmos.color = Color.red;
 		Gizmos.DrawWireSphere(transform.position, lightDetectionRange);
-
 		Gizmos.color = Color.yellow;
 		Gizmos.DrawWireSphere(transform.position, patrolRadius);
 	}
