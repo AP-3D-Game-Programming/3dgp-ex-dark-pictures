@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 1183682103057832156}
   m_Layer: 0
   m_Name: Door
-  m_TagString: Door
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -44,9 +44,10 @@ GameObject:
   - component: {fileID: 5525916588461335843}
   - component: {fileID: 3155824562990162499}
   - component: {fileID: 8149655841090687986}
-  m_Layer: 0
+  - component: {fileID: 6078251688878196660}
+  m_Layer: 6
   m_Name: DoorObject
-  m_TagString: Untagged
+  m_TagString: Door
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -143,3 +144,20 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &6078251688878196660
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6043137821189389542}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 653359acd97dd8246be7910340a4c147, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Door
+  key: {fileID: 0}
+  inventory: {fileID: 0}
+  openAngle: -90
+  openSpeed: 2
+  isOpen: 0
