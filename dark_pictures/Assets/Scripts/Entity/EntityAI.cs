@@ -1,7 +1,6 @@
 using UnityEngine;
 using UnityEngine.AI;
 using System.Collections;
-using UnityEditor.Rendering;
 
 public class EntityAI : MonoBehaviour
 {

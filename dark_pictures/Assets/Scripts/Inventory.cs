@@ -1,6 +1,4 @@
 using System.Collections.Generic;
-using JetBrains.Annotations;
-using UnityEditor.Animations;
 using UnityEngine;
 
 public class Inventory : MonoBehaviour
