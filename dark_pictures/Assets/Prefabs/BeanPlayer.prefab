@@ -100,9 +100,10 @@ GameObject:
   - component: {fileID: 1279662824994058628}
   - component: {fileID: 2880687346942795560}
   - component: {fileID: 2596628061070004578}
+  - component: {fileID: 3135736077825470536}
   m_Layer: 0
   m_Name: BeanPlayer
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -161,6 +162,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 300d1b865c64c5f488e748f64602cd3e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController
+  gameManager: {fileID: 0}
   moveSpeed: 8
   sprintSpeed: 14
   crouchSpeed: 2.5
@@ -179,6 +181,18 @@ MonoBehaviour:
   obstacleMask:
     serializedVersion: 2
     m_Bits: 0
+--- !u!114 &3135736077825470536
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4595242755913112762}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 001b0f01ece0d0349ac5f441170a5f3c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerInventory
 --- !u!1 &6024854721440814743
 GameObject:
   m_ObjectHideFlags: 0
