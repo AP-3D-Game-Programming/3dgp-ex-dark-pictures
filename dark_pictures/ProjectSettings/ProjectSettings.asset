@@ -938,11 +938,11 @@ PlayerSettings:
   captureStartupLogs: {}
   activeInputHandler: 2
   windowsGamepadBackendHint: 0
-  cloudProjectId: e640d7cf-63bd-41f3-9a3b-102e548802be
+  cloudProjectId: 33071092-c1ba-4635-aeb4-fa055c031107
   framebufferDepthMemorylessMode: 0
   qualitySettingsNames: []
   projectName: dark_pictures
-  organizationId: unity_00iamzero
+  organizationId: haisam02
   cloudEnabled: 0
   legacyClampBlendShapeWeights: 0
   hmiLoadingImage: {fileID: 0}

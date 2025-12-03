@@ -12170,6 +12170,10 @@ PrefabInstance:
       value: -20
       objectReference: {fileID: 0}
     - target: {fileID: 2596628061070004578, guid: 7d9f1028ab0c6a64ebe833643141c3bf, type: 3}
+      propertyPath: moveSpeed
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2596628061070004578, guid: 7d9f1028ab0c6a64ebe833643141c3bf, type: 3}
       propertyPath: jumpHeight
       value: 1.5
       objectReference: {fileID: 0}
@@ -12182,8 +12186,24 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1987337003}
     - target: {fileID: 2596628061070004578, guid: 7d9f1028ab0c6a64ebe833643141c3bf, type: 3}
+      propertyPath: sprintSpeed
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 2596628061070004578, guid: 7d9f1028ab0c6a64ebe833643141c3bf, type: 3}
       propertyPath: mouseSensitivity
       value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 2596628061070004578, guid: 7d9f1028ab0c6a64ebe833643141c3bf, type: 3}
+      propertyPath: outOfBreathSound
+      value: 
+      objectReference: {fileID: 8300000, guid: 5e6365e3a47a5604b9c4defa63bf3471, type: 3}
+    - target: {fileID: 2596628061070004578, guid: 7d9f1028ab0c6a64ebe833643141c3bf, type: 3}
+      propertyPath: staminaDrainRate
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 2596628061070004578, guid: 7d9f1028ab0c6a64ebe833643141c3bf, type: 3}
+      propertyPath: staminaRegenRate
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 4351379898236352973, guid: 7d9f1028ab0c6a64ebe833643141c3bf, type: 3}
       propertyPath: m_Layer

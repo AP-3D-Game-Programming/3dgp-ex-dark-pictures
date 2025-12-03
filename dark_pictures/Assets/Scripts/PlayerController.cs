@@ -41,9 +41,35 @@ public class PlayerController : MonoBehaviour
     private float currentHeight;
     private float targetHeight;
 
+    [Header("Stamina")]
+    public float maxStamina = 100f;
+    public float staminaDrainRate = 20f; // Hoeveel stamina word gebruikt per seconden
+    public float staminaRegenRate = 15f; // Hoeveel stamina genereert per seconden
+    public float staminaRegenDelay = 1f; // De tijd tot stamina terug begint te regenereren na sprinten
+    public float minStaminaForSprint = 30f; // Minimale stamina om te kunnen sprinten
+    public float minStaminaForBreathing = 30f; // Wanneer de audio voor zwaar ademen begint
+    private float currentStamina;
+    private float timeSinceLastSprint = 0f;
+    private bool canSprint = true;
+
+    [Header("Audio")]
+    public AudioClip outOfBreathSound; // Vak voor geluidsbestand
+    private AudioSource audioSource;
+
     void Start()
     {
         controller = GetComponent<CharacterController>();
+        currentStamina = maxStamina; // Starten met volle stamina
+
+        // Setup AudioSource voor ademhalingsgeluid
+        audioSource = GetComponent<AudioSource>();
+        if (audioSource == null)
+        {
+            audioSource = gameObject.AddComponent<AudioSource>();
+        }
+        audioSource.playOnAwake = false;
+        audioSource.spatialBlend = 0f; // 2D geluid
+
         normalHeight = controller.height;
         currentHeight = normalHeight;
         targetHeight = normalHeight;
@@ -122,49 +148,122 @@ public class PlayerController : MonoBehaviour
 		}
 	}
 
-	/// <summary>
-	/// Handles player movement, including walking, sprinting, crouching, and jumping.
-	/// </summary>
-	/// <remarks>
-	/// This method processes keyboard input to determine movement direction and speed,  applies
-	/// gravity, and updates the player's position accordingly. Movement is  constrained by the player's grounded state,
-	/// crouching status, and gravity effects.
-	/// </remarks>
-	void HandleMovement()
+    /// <summary>
+    /// Handles player movement, including walking, sprinting, crouching, jumping, and stamina management.
+    /// </summary>
+    /// <remarks>
+    /// This method processes keyboard input to determine movement direction and speed, applies
+    /// gravity, and updates the player's position accordingly. Movement is constrained by the player's grounded state,
+    /// crouching status, and gravity effects.
+    /// 
+    /// Stamina is consumed while sprinting and automatically regenerates when not sprinting.
+    /// When stamina is depleted, the player is forced to walk speed until stamina fully recharges.
+    /// A short delay occurs before stamina regeneration begins after stopping a sprint.
+    /// </remarks>
+    void HandleMovement()
 	{
-		isGrounded = controller.isGrounded;
+        isGrounded = controller.isGrounded;
 
-		if (isGrounded && velocity.y < 0)
-			velocity.y = -2f;
+        if (isGrounded && velocity.y < 0)
+            velocity.y = -2f;
 
-		Vector2 input = Vector2.zero;
-		var kb = Keyboard.current;
-		if (kb == null) return;
+        Vector2 input = Vector2.zero;
+        var kb = Keyboard.current;
+        if (kb == null) return;
 
-		if (kb.wKey.isPressed) input.y += 1;
-		if (kb.sKey.isPressed) input.y -= 1;
-		if (kb.dKey.isPressed) input.x += 1;
-		if (kb.aKey.isPressed) input.x -= 1;
+        if (kb.wKey.isPressed) input.y += 1;
+        if (kb.sKey.isPressed) input.y -= 1;
+        if (kb.dKey.isPressed) input.x += 1;
+        if (kb.aKey.isPressed) input.x -= 1;
 
-		input = input.normalized;
+        input = input.normalized;
+        Vector3 move = transform.right * input.x + transform.forward * input.y;
 
-		Vector3 move = transform.right * input.x + transform.forward * input.y;
+        // Handle stamina and sprinting
+        // Stamina drains while sprinting and regenerates automatically after a delay
+        bool wantsToSprint = kb.leftShiftKey.isPressed && input.magnitude > 0;
+        bool isSprinting = false;
 
-		// If crouching -> Crouch Speed
-		// Else if Shift held -> Sprint Speed
-		// Else -> Walk Speed
-		float speed = isCrouching ? crouchSpeed :
-					  kb.leftShiftKey.isPressed ? sprintSpeed :
-					  moveSpeed;
+        if (wantsToSprint && currentStamina > 0 && canSprint && !isCrouching)
+        {
+            // Draining stamina while sprinting
+            isSprinting = true;
+            currentStamina -= staminaDrainRate * Time.deltaTime;
+            timeSinceLastSprint = 0f;
 
-		controller.Move(move * speed * Time.deltaTime);
+            if (currentStamina <= 0)
+            {
+                currentStamina = 0;
+                canSprint = false; // Prevent sprinting until stamina fully recharges
+            }
+        }
+        else
+        {
+            // Regenerate stamina after delay
+            timeSinceLastSprint += Time.deltaTime;
 
-		// JUMP (Only if grounded)
-		if (kb.spaceKey.wasPressedThisFrame && isGrounded)
-			velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
+            if (timeSinceLastSprint >= staminaRegenDelay && currentStamina < maxStamina)
+            {
+                currentStamina += staminaRegenRate * Time.deltaTime;
 
-		velocity.y += gravity * Time.deltaTime;
+                // Sprinten toegestaan vanaf minStaminaForSprint
+                if (currentStamina >= minStaminaForSprint)
+                {
+                    canSprint = true;
+                }
 
-		controller.Move(velocity * Time.deltaTime);
-	}
+                if (currentStamina >= maxStamina)
+                {
+                    currentStamina = maxStamina;
+                }
+            }
+        }
+
+        // If crouching -> Crouch Speed
+        // Else if Shift held AND stamina available -> Sprint Speed
+        // Else -> Walk Speed
+        float speed = isCrouching ? crouchSpeed :
+                      isSprinting ? sprintSpeed :
+                      moveSpeed;
+
+        controller.Move(move * speed * Time.deltaTime);
+
+        // JUMP (Only if grounded)
+        if (kb.spaceKey.wasPressedThisFrame && isGrounded)
+            velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
+
+        velocity.y += gravity * Time.deltaTime;
+
+        controller.Move(velocity * Time.deltaTime);
+
+        // Roept de breathing sound handler aan
+        HandleBreathingSound();
+    }
+
+    /// <summary>
+    /// Handles the out of breath sound effect based on current stamina levels.
+    /// </summary>
+    /// <remarks>
+    /// The breathing sound loops continuously when stamina drops below the minimum threshold
+    /// and stops automatically once stamina regenerates above that threshold.
+    /// </remarks>
+    void HandleBreathingSound()
+    {
+        if (outOfBreathSound == null || audioSource == null) return;
+
+        // Start looping breathing sound als stamina onder drempel komt
+        if (currentStamina < minStaminaForBreathing && !audioSource.isPlaying)
+        {
+            audioSource.clip = outOfBreathSound;
+            audioSource.loop = true;
+            audioSource.Play();
+        }
+        // Stop breathing sound als stamina boven drempel komt
+        else if (currentStamina >= minStaminaForBreathing && audioSource.isPlaying && audioSource.clip == outOfBreathSound)
+        {
+            audioSource.Stop();
+            audioSource.loop = false;
+        }
+    }
+
 }
