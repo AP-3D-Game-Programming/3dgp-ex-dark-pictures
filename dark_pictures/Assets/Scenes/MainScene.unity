@@ -12166,6 +12166,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1987337003}
     - target: {fileID: 2596628061070004578, guid: 7d9f1028ab0c6a64ebe833643141c3bf, type: 3}
+      propertyPath: entity
+      value: 
+      objectReference: {fileID: 1676634628}
+    - target: {fileID: 2596628061070004578, guid: 7d9f1028ab0c6a64ebe833643141c3bf, type: 3}
       propertyPath: gravity
       value: -20
       objectReference: {fileID: 0}
@@ -12190,6 +12194,10 @@ PrefabInstance:
       value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 2596628061070004578, guid: 7d9f1028ab0c6a64ebe833643141c3bf, type: 3}
+      propertyPath: heartbeatSound
+      value: 
+      objectReference: {fileID: 8300000, guid: 502e65b901b25fd42abc9ea582344440, type: 3}
+    - target: {fileID: 2596628061070004578, guid: 7d9f1028ab0c6a64ebe833643141c3bf, type: 3}
       propertyPath: mouseSensitivity
       value: 30
       objectReference: {fileID: 0}
@@ -12203,7 +12211,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2596628061070004578, guid: 7d9f1028ab0c6a64ebe833643141c3bf, type: 3}
       propertyPath: staminaRegenRate
-      value: 10
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2596628061070004578, guid: 7d9f1028ab0c6a64ebe833643141c3bf, type: 3}
+      propertyPath: maxHeartbeatDistance
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 4351379898236352973, guid: 7d9f1028ab0c6a64ebe833643141c3bf, type: 3}
       propertyPath: m_Layer

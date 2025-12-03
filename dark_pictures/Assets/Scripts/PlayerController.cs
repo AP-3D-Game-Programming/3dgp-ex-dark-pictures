@@ -56,6 +56,14 @@ public class PlayerController : MonoBehaviour
     public AudioClip outOfBreathSound; // Vak voor geluidsbestand
     private AudioSource audioSource;
 
+    [Header("Heartbeat")]
+    public AudioClip heartbeatSound; // vak voor hartslaggeluid
+    public Transform entity; // vak voor entity
+    public float maxHeartbeatDistance = 20f; // Maximale afstand waar hartslag start
+    private AudioSource heartbeatAudioSource;
+
+
+
     void Start()
     {
         controller = GetComponent<CharacterController>();
@@ -69,6 +77,12 @@ public class PlayerController : MonoBehaviour
         }
         audioSource.playOnAwake = false;
         audioSource.spatialBlend = 0f; // 2D geluid
+
+        // Setup AudioSource voor hartslag
+        heartbeatAudioSource = gameObject.AddComponent<AudioSource>();
+        heartbeatAudioSource.playOnAwake = false;
+        heartbeatAudioSource.spatialBlend = 0f; // 2D geluid
+        heartbeatAudioSource.loop = false;
 
         normalHeight = controller.height;
         currentHeight = normalHeight;
@@ -85,6 +99,7 @@ public class PlayerController : MonoBehaviour
         HandleLook();
         HandleCrouch();
         HandleMovement();
+        HandleHeartbeat();
     }
 
     /// <summary>
@@ -263,6 +278,41 @@ public class PlayerController : MonoBehaviour
         {
             audioSource.Stop();
             audioSource.loop = false;
+        }
+    }
+
+    /// <summary>
+    /// Handles the heartbeat sound effect based on proximity to entity.
+    /// </summary>
+    /// <remarks>
+    /// The heartbeat loops continuously when the player is within range of the entity
+    /// and stops automatically when the player moves out of range.
+    /// </remarks>
+    void HandleHeartbeat()
+    {
+        if (heartbeatSound == null || heartbeatAudioSource == null || entity == null) return;
+
+        // Bereken afstand tot entity
+        float distance = Vector3.Distance(transform.position, entity.position);
+
+        // Als we binnen max afstand zijn - start loop
+        if (distance <= maxHeartbeatDistance)
+        {
+            if (!heartbeatAudioSource.isPlaying)
+            {
+                heartbeatAudioSource.clip = heartbeatSound;
+                heartbeatAudioSource.loop = true;
+                heartbeatAudioSource.Play();
+            }
+        }
+        // Buiten bereik - stop loop
+        else
+        {
+            if (heartbeatAudioSource.isPlaying)
+            {
+                heartbeatAudioSource.Stop();
+                heartbeatAudioSource.loop = false;
+            }
         }
     }
 
