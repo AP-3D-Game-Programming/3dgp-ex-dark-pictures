@@ -12,6 +12,9 @@ public class TutorialNarrativeManager : MonoBehaviour
 	public AudioSource notificationSound;
 	public AudioClip pingSound;
 
+	[Header("Door")]
+	public Door doorObject;
+
 	private void Awake()
 	{
 		if (Instance == null) Instance = this;
@@ -47,10 +50,13 @@ public class TutorialNarrativeManager : MonoBehaviour
 				instructionText.text = "It's locked. Look for a key nearby.";
 				break;
 
-			case 4: // Binnen
+			case 4: // Binnen			niet gebruikt
 				instructionText.text = "It's dark... Use [RMB] to Flash.";
 				break;
-
+			case 5: //sluit de deur achter speler
+				doorObject.isOpen = false; 
+				instructionText.text = "Find another way out.";
+				break;
 			case 99: // Gebruik dit om tekst weg te halen
 				instructionText.text = "";
 				break;

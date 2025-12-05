@@ -5,13 +5,16 @@ using System.Collections;
 public class IntroPhoneSequence : MonoBehaviour
 {
 	[Header("UI References")]
-	public GameObject pressTabUI; // SLEEP HIER JE 'PressTab' OBJECT IN
-	public TextMeshProUGUI screenText; // De tekst OP de telefoon (Comments)
+	public GameObject pressTabUI; //in canvas
+	public TextMeshProUGUI screenText;
 
 	[Header("Player References")]
-	public PlayerPhoneSystem phoneSystemScript; // Sleep je Player hierin
+	public PlayerPhoneSystem phoneSystemScript;
 	public PlayerController playerMovementScript;
 	public Transform playerCamera;
+
+	[Header("Flashlight Sequence Settings")]
+	public CameraFlash flashlight;
 
 	[Header("Sequence Settings")]
 	public float lookDownAngle = 30f;
@@ -23,13 +26,15 @@ public class IntroPhoneSequence : MonoBehaviour
 	public AudioClip textSound;
 	public AudioClip objectiveSound;
 
-	private bool waitingForInput = true; // We beginnen in wachtstand
+	private bool waitingForInput = true;
 	private bool sequenceStarted = false;
 
 	void Start()
 	{
 		// 1. Speler bevriezen
 		if (playerMovementScript != null) playerMovementScript.enabled = false;
+		
+		if (flashlight != null) flashlight.enabled = false;
 
 		// 2. Camera naar beneden
 		if (playerCamera != null) playerCamera.localRotation = Quaternion.Euler(lookDownAngle, 0, 0);
@@ -43,7 +48,7 @@ public class IntroPhoneSequence : MonoBehaviour
 
 	void Update()
 	{
-		// Zolang we wachten, luister naar TAB
+		// Speler moet tab drukken om te starten
 		if (waitingForInput)
 		{
 			if (Input.GetKeyDown(KeyCode.Tab))
@@ -72,7 +77,7 @@ public class IntroPhoneSequence : MonoBehaviour
 	{
 		yield return new WaitForSeconds(1f);
 
-		AddText("User88: FAKE! 🙄", false);
+		AddText("User88: FAKE! 😂", false);
 		yield return new WaitForSeconds(textSpeed);
 
 		AddText("GX_Hunter: Photoshop skills 2/10", false);
@@ -95,6 +100,8 @@ public class IntroPhoneSequence : MonoBehaviour
 		yield return new WaitForSeconds(readTime);
 
 		PutPhoneAway();
+		if (flashlight != null) flashlight.enabled = true;
+
 	}
 
 	void AddText(string txt, bool isObjective)

@@ -28,8 +28,8 @@ public class CameraFlash : MonoBehaviour
 
 	void Update()
 	{
-		if (gameManager.isGameOver)
-			return;
+		if (gameManager != null && gameManager.isGameOver) return;
+
 		if (Input.GetMouseButtonDown(0))
 		{
 			if (flashLight == null) return;
@@ -52,43 +52,68 @@ public class CameraFlash : MonoBehaviour
 		flashLight.intensity = flashIntensity;
 		if (audioSource != null && flashSound != null) audioSource.PlayOneShot(flashSound);
 
-		DetectAndStunEnemies();
+		DetectEnemies();
 	}
 
-	void DetectAndStunEnemies()
+	void DetectEnemies()
 	{
+		// 1. Vind alles in de buurt
 		Collider[] hits = Physics.OverlapSphere(transform.position, flashRange);
 
 		foreach (Collider hit in hits)
 		{
-			EntityAI enemy = hit.GetComponentInParent<EntityAI>();
+			// We hebben "iets" van een vijand gevonden (bijv. een hand of oog)
+			// Laten we kijken bij welk HOOFD-SCRIPT dit hoort.
+			EntityAI realEnemy = hit.GetComponentInParent<EntityAI>();
+			IntroEntity introEnemy = hit.GetComponentInParent<IntroEntity>();
 
-			if (enemy != null)
+			// Als dit geen vijand is, negeer hem
+			if (realEnemy == null && introEnemy == null) continue;
+
+			Transform targetTransform = hit.transform;
+			Vector3 directionToEnemy = (targetTransform.position - transform.position).normalized;
+			float angle = Vector3.Angle(transform.forward, directionToEnemy);
+
+			if (angle < flashAngle)
 			{
-				Vector3 directionToEnemy = (enemy.transform.position - transform.position).normalized;
-				float angle = Vector3.Angle(transform.forward, directionToEnemy);
+				// Start iets verder naar voren (0.5f) om je eigen lichaam te missen
+				Vector3 startPos = transform.position + (transform.forward * 0.5f);
+				Vector3 endPos = targetTransform.position; // Mik op het punt dat we vonden
 
-				if (angle < flashAngle)
+				RaycastHit lineHit;
+
+				// Negeer triggers (deuren etc)
+				if (Physics.Linecast(startPos, endPos, out lineHit, -1, QueryTriggerInteraction.Ignore))
 				{
-					Vector3 startPos = transform.position + (transform.forward * 0.5f);
+					// --- DE NIEUWE SLIMME CHECK ---
 
-					Vector3 endPos = enemy.transform.position + Vector3.up;
-
-					RaycastHit lineHit;
-
-					if (Physics.Linecast(startPos, endPos, out lineHit))
+					// Check 1: Hebben we onszelf geraakt?
+					if (lineHit.transform.root == transform.root)
 					{
-						// Check if we hit the enemy OR a child of the enemy
-						if (lineHit.transform == enemy.transform || lineHit.transform.IsChildOf(enemy.transform))
-						{
-							Debug.Log("<color=green>STUN SUCCESS:</color> " + enemy.name);
-							enemy.StunEntity(stunDuration);
-						}
-						else
-						{
-							Debug.Log("<color=red>BLOCKED BY:</color> " + lineHit.transform.name);
-						}
+						Debug.Log("<color=red>GEBLOKKEERD DOOR MEZELF:</color> Probeer stap 2 hieronder!");
+						continue;
 					}
+
+					// Check 2: Raakt de straal iets dat bij de Echte Enemy hoort?
+					EntityAI hitReal = lineHit.transform.GetComponentInParent<EntityAI>();
+					if (realEnemy != null && hitReal == realEnemy)
+					{
+						Debug.Log("Stunned Real Entity (Via " + lineHit.transform.name + ")");
+						realEnemy.StunEntity(stunDuration);
+						continue;
+					}
+
+					// Check 3: Raakt de straal iets dat bij de Intro Enemy hoort?
+					IntroEntity hitIntro = lineHit.transform.GetComponentInParent<IntroEntity>();
+					if (introEnemy != null && hitIntro == introEnemy)
+					{
+						Debug.Log("Triggered Intro Sequence (Via " + lineHit.transform.name + ")");
+						introEnemy.TriggerIntroScare();
+						continue;
+					}
+
+					// Als we hier komen, raken we echt een muur of obstakel
+					Debug.Log("<color=red>GEBLOKKEERD DOOR:</color> " + lineHit.transform.name);
 				}
 			}
 		}

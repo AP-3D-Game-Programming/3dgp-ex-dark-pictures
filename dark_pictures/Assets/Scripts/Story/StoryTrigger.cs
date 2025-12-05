@@ -3,7 +3,7 @@
 public class StoryTrigger : MonoBehaviour
 {
 	[Header("Welk verhaal stukje is dit?")]
-	public int storyID; // 1 = Crouch, 2 = Jump, etc.
+	public int storyID; // 1 = Crouch, 2 = Jump, etc. Zie TutorialNarrativeManager
 
 	[Header("Eenmalig?")]
 	public bool triggerOnce = true;
@@ -13,14 +13,10 @@ public class StoryTrigger : MonoBehaviour
 	{
 		if (triggerOnce && hasTriggered) return;
 
-		// Check of het de speler is (Zorg dat je Player de tag "Player" heeft!)
 		if (other.CompareTag("Player"))
 		{
 			TutorialNarrativeManager.Instance.AdvanceStory(storyID);
 			hasTriggered = true;
-
-			// Optioneel: Vernietig de trigger na gebruik om geheugen te sparen
-			// Destroy(gameObject); 
 		}
 	}
 }
