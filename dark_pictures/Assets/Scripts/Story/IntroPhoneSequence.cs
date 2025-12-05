@@ -110,8 +110,7 @@ public class IntroPhoneSequence : MonoBehaviour
 
 		if (phoneAudioSource != null)
 		{
-			if (isObjective && objectiveSound != null) phoneAudioSource.PlayOneShot(objectiveSound);
-			else if (textSound != null) phoneAudioSource.PlayOneShot(textSound);
+			if (textSound != null) phoneAudioSource.PlayOneShot(textSound);
 		}
 	}
 

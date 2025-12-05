@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections; // Nodig voor Coroutines
 
 public class IntroEntity : MonoBehaviour
 {
@@ -16,13 +17,21 @@ public class IntroEntity : MonoBehaviour
 	public AudioClip screamSound;
 	public ParticleSystem vanishEffect;
 
+	[Header("Settings")]
+	public float echoFadeSpeed = 4f;
+
 	private bool hasTriggered = false;
 	private float spawnTime;
 
-	// Zodra dit object AAN gaat (door de trigger), starten we de klok
 	void OnEnable()
 	{
 		spawnTime = Time.time;
+
+		if (audioSource != null && screamSound != null)
+		{
+			audioSource.clip = screamSound;
+			audioSource.Play();
+		}
 	}
 
 	public void TriggerIntroScare()
@@ -30,24 +39,40 @@ public class IntroEntity : MonoBehaviour
 		if (Time.time < spawnTime + 0.5f) return;
 
 		if (hasTriggered) return;
+		hasTriggered = true;
 
 		Debug.Log("MONSTER WEGGEFLITST!");
 
-		// 1. Geluid en Effecten
-		if (audioSource != null && screamSound != null) audioSource.PlayOneShot(screamSound);
-		if (vanishEffect != null) vanishEffect.Play();
 		if (visualModel != null) visualModel.SetActive(false);
+		if (vanishEffect != null) vanishEffect.Play();
 
-		// 2. Speler weer loslaten
+		// 2. Audio "Echo Stop" Effect
+		if (audioSource != null)
+		{
+			//  een echo.
+			StartCoroutine(FadeOutAudio());
+		}
+
 		if (playerScript != null) playerScript.enabled = true;
-
-		// 3. Tekst "Press LMB" weer UIT zetten
 		if (flashPromptUI != null) flashPromptUI.SetActive(false);
 
-		// 4. Start de echte game
 		if (gameManager != null) gameManager.StartGame();
 		if (realMonster != null) realMonster.SetActive(true);
 
-		Destroy(gameObject, 2f);
+		Destroy(gameObject, 3f);
+	}
+
+	IEnumerator FadeOutAudio()
+	{
+		float startVolume = audioSource.volume;
+
+		while (audioSource.volume > 0)
+		{
+			audioSource.volume -= startVolume * echoFadeSpeed * Time.deltaTime;
+			yield return null;
+		}
+
+		audioSource.Stop();
+		audioSource.volume = startVolume; // Reset volume voor de zekerheid
 	}
 }

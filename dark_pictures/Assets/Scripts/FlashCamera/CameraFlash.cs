@@ -57,17 +57,13 @@ public class CameraFlash : MonoBehaviour
 
 	void DetectEnemies()
 	{
-		// 1. Vind alles in de buurt
 		Collider[] hits = Physics.OverlapSphere(transform.position, flashRange);
 
 		foreach (Collider hit in hits)
 		{
-			// We hebben "iets" van een vijand gevonden (bijv. een hand of oog)
-			// Laten we kijken bij welk HOOFD-SCRIPT dit hoort.
 			EntityAI realEnemy = hit.GetComponentInParent<EntityAI>();
 			IntroEntity introEnemy = hit.GetComponentInParent<IntroEntity>();
 
-			// Als dit geen vijand is, negeer hem
 			if (realEnemy == null && introEnemy == null) continue;
 
 			Transform targetTransform = hit.transform;
@@ -76,25 +72,20 @@ public class CameraFlash : MonoBehaviour
 
 			if (angle < flashAngle)
 			{
-				// Start iets verder naar voren (0.5f) om je eigen lichaam te missen
 				Vector3 startPos = transform.position + (transform.forward * 0.5f);
-				Vector3 endPos = targetTransform.position; // Mik op het punt dat we vonden
+				Vector3 endPos = targetTransform.position;
 
 				RaycastHit lineHit;
 
 				// Negeer triggers (deuren etc)
 				if (Physics.Linecast(startPos, endPos, out lineHit, -1, QueryTriggerInteraction.Ignore))
 				{
-					// --- DE NIEUWE SLIMME CHECK ---
-
-					// Check 1: Hebben we onszelf geraakt?
 					if (lineHit.transform.root == transform.root)
 					{
 						Debug.Log("<color=red>GEBLOKKEERD DOOR MEZELF:</color> Probeer stap 2 hieronder!");
 						continue;
 					}
 
-					// Check 2: Raakt de straal iets dat bij de Echte Enemy hoort?
 					EntityAI hitReal = lineHit.transform.GetComponentInParent<EntityAI>();
 					if (realEnemy != null && hitReal == realEnemy)
 					{
@@ -103,7 +94,6 @@ public class CameraFlash : MonoBehaviour
 						continue;
 					}
 
-					// Check 3: Raakt de straal iets dat bij de Intro Enemy hoort?
 					IntroEntity hitIntro = lineHit.transform.GetComponentInParent<IntroEntity>();
 					if (introEnemy != null && hitIntro == introEnemy)
 					{
@@ -112,7 +102,6 @@ public class CameraFlash : MonoBehaviour
 						continue;
 					}
 
-					// Als we hier komen, raken we echt een muur of obstakel
 					Debug.Log("<color=red>GEBLOKKEERD DOOR:</color> " + lineHit.transform.name);
 				}
 			}

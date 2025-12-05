@@ -30,13 +30,51 @@ public class PlayerController : MonoBehaviour
     private float defaultHeight;
     private bool isCrouching = false;
 
-    void Start()
+	[Header("Stamina")]
+	public float maxStamina = 100f;
+	public float staminaDrainRate = 20f; // Hoeveel stamina word gebruikt per seconden
+	public float staminaRegenRate = 15f; // Hoeveel stamina genereert per seconden
+	public float staminaRegenDelay = 1f; // De tijd tot stamina terug begint te regenereren na sprinten
+	public float minStaminaForSprint = 30f; // Minimale stamina om te kunnen sprinten
+	public float minStaminaForBreathing = 30f; // Wanneer de audio voor zwaar ademen begint
+	private float currentStamina;
+	private float timeSinceLastSprint = 0f;
+	private bool canSprint = true;
+
+	[Header("Audio")]
+	public AudioClip outOfBreathSound; // Vak voor geluidsbestand
+	private AudioSource audioSource;
+
+    [Header("Heartbeat")]
+    public AudioClip heartbeatSound; // Vak voor hartslaggeluid
+    public Transform entity; // Vak voor entity
+    public float maxHeartbeatDistance = 20f; // Maximale afstand waar hartslag start
+    private AudioSource heartbeatAudioSource;
+
+	void Start()
     {
         controller = GetComponent<CharacterController>();
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
-        
-        defaultHeight = controller.height;
+
+		currentStamina = maxStamina;
+
+		// Setup AudioSource voor ademhalingsgeluid
+		audioSource = GetComponent<AudioSource>();
+		if (audioSource == null)
+		{
+			audioSource = gameObject.AddComponent<AudioSource>();
+		}
+		audioSource.playOnAwake = false;
+		audioSource.spatialBlend = 0f;
+
+        // Setup AudioSource voor hartslag
+        heartbeatAudioSource = gameObject.AddComponent<AudioSource>();
+        heartbeatAudioSource.playOnAwake = false;
+        heartbeatAudioSource.spatialBlend = 0f; // 2D geluid
+        heartbeatAudioSource.loop = false;
+
+		defaultHeight = controller.height;
 
         if(playerCamera == null) playerCamera = GetComponentInChildren<Camera>();
     }
@@ -48,6 +86,8 @@ public class PlayerController : MonoBehaviour
 
         HandleLook();
         HandleMovement();
+        HandleBreathingSound();
+        HandleHeartbeat();
     }
 
     public void ForceCameraPitch(float angle)
@@ -82,22 +122,58 @@ public class PlayerController : MonoBehaviour
 
         float x = 0f;
         float y = 0f;
-        if (Keyboard.current != null)
-        {
-            if (Keyboard.current.aKey.isPressed) x -= 1f;
-            if (Keyboard.current.dKey.isPressed) x += 1f;
-            if (Keyboard.current.wKey.isPressed) y += 1f;
-            if (Keyboard.current.sKey.isPressed) y -= 1f;
-        }
+        if (Keyboard.current.aKey.isPressed) x -= 1f;
+        if (Keyboard.current.dKey.isPressed) x += 1f;
+        if (Keyboard.current.wKey.isPressed) y += 1f;
+        if (Keyboard.current.sKey.isPressed) y -= 1f;
+
         Vector2 input = new Vector2(x, y).normalized;
         Vector3 move = transform.right * input.x + transform.forward * input.y;
 
-        bool wantsSprint = Keyboard.current.leftShiftKey.isPressed;
+        bool wantsSprint = Keyboard.current.leftShiftKey.isPressed && input.magnitude > 0;
         bool wantsCrouch = Keyboard.current.cKey.isPressed;
         
         isCrouching = wantsCrouch;
 
-        currentSpeed = isCrouching ? crouchSpeed : (wantsSprint ? sprintSpeed : moveSpeed);
+        // Handle stamina and sprinting
+        bool isSprinting = false;
+
+        if (wantsSprint && currentStamina > 0 && canSprint && !isCrouching)
+        {
+            // Draining stamina while sprinting
+            isSprinting = true;
+            currentStamina -= staminaDrainRate * Time.deltaTime;
+            timeSinceLastSprint = 0f;
+
+            if (currentStamina <= 0)
+            {
+                currentStamina = 0;
+                canSprint = false; // Prevent sprinting until stamina fully recharges
+            }
+        }
+        else
+        {
+            // Regenerate stamina after delay
+            timeSinceLastSprint += Time.deltaTime;
+
+            if (timeSinceLastSprint >= staminaRegenDelay && currentStamina < maxStamina)
+            {
+                currentStamina += staminaRegenRate * Time.deltaTime;
+
+                // Sprinten toegestaan vanaf minStaminaForSprint
+                if (currentStamina >= minStaminaForSprint)
+                {
+                    canSprint = true;
+                }
+
+                if (currentStamina >= maxStamina)
+                {
+                    currentStamina = maxStamina;
+                }
+            }
+        }
+
+        currentSpeed = isCrouching ? crouchSpeed : (isSprinting ? sprintSpeed : moveSpeed);
         
         float targetControllerHeight = isCrouching ? defaultHeight / 2 : defaultHeight;
         controller.height = Mathf.Lerp(controller.height, targetControllerHeight, Time.deltaTime * 10f);
@@ -117,8 +193,68 @@ public class PlayerController : MonoBehaviour
             velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
         }
         
-        // 6. Gravity
         velocity.y += gravity * Time.deltaTime;
         controller.Move(velocity * Time.deltaTime);
+    }
+
+    /// <summary>
+    /// Handles the out of breath sound effect based on current stamina levels.
+    /// </summary>
+    /// <remarks>
+    /// The breathing sound loops continuously when stamina drops below the minimum threshold
+    /// and stops automatically once stamina regenerates above that threshold.
+    /// </remarks>
+    void HandleBreathingSound()
+    {
+        if (outOfBreathSound == null || audioSource == null) return;
+
+        // Start looping breathing sound als stamina onder drempel komt
+        if (currentStamina < minStaminaForBreathing && !audioSource.isPlaying)
+        {
+            audioSource.clip = outOfBreathSound;
+            audioSource.loop = true;
+            audioSource.Play();
+        }
+        // Stop breathing sound als stamina boven drempel komt
+        else if (currentStamina >= minStaminaForBreathing && audioSource.isPlaying && audioSource.clip == outOfBreathSound)
+        {
+            audioSource.Stop();
+            audioSource.loop = false;
+        }
+    }
+
+    /// <summary>
+    /// Handles the heartbeat sound effect based on proximity to entity.
+    /// </summary>
+    /// <remarks>
+    /// The heartbeat loops continuously when the player is within range of the entity
+    /// and stops automatically when the player moves out of range.
+    /// </remarks>
+    void HandleHeartbeat()
+    {
+        if (heartbeatSound == null || heartbeatAudioSource == null || entity == null) return;
+
+        // Bereken afstand tot entity
+        float distance = Vector3.Distance(transform.position, entity.position);
+
+        // Als we binnen max afstand zijn - start loop
+        if (distance <= maxHeartbeatDistance)
+        {
+            if (!heartbeatAudioSource.isPlaying)
+            {
+                heartbeatAudioSource.clip = heartbeatSound;
+                heartbeatAudioSource.loop = true;
+                heartbeatAudioSource.Play();
+            }
+        }
+        // Buiten bereik - stop loop
+        else
+        {
+            if (heartbeatAudioSource.isPlaying)
+            {
+                heartbeatAudioSource.Stop();
+                heartbeatAudioSource.loop = false;
+            }
+        }
     }
 }
