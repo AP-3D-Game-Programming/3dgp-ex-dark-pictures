@@ -927,11 +927,11 @@ PlayerSettings:
   captureStartupLogs: {}
   activeInputHandler: 2
   windowsGamepadBackendHint: 0
-  cloudProjectId: e640d7cf-63bd-41f3-9a3b-102e548802be
+  cloudProjectId: 84b451fc-8f38-4c05-a3dd-a8927aae0058
   framebufferDepthMemorylessMode: 0
   qualitySettingsNames: []
-  projectName: dark_pictures
-  organizationId: unity_00iamzero
+  projectName: dark_pictures (1)
+  organizationId: zeus-deus
   cloudEnabled: 0
   legacyClampBlendShapeWeights: 0
   hmiLoadingImage: {fileID: 0}
