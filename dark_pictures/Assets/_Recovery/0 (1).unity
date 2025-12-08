@@ -6210,23 +6210,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 980402552}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!1 &986004172 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 6752112893786543095, guid: 7d9f1028ab0c6a64ebe833643141c3bf, type: 3}
-  m_PrefabInstance: {fileID: 1011914031}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &986004176
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 986004172}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2537a5a393a06784b98b61489936b725, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::BatteryLife
 --- !u!1001 &993407985
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6369,13 +6352,9 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 126069940}
     - target: {fileID: 1863620129342110328, guid: 7d9f1028ab0c6a64ebe833643141c3bf, type: 3}
-      propertyPath: batteryLife
-      value: 
-      objectReference: {fileID: 986004176}
-    - target: {fileID: 1863620129342110328, guid: 7d9f1028ab0c6a64ebe833643141c3bf, type: 3}
       propertyPath: gameManager
       value: 
-      objectReference: {fileID: 1987337003}
+      objectReference: {fileID: 0}
     - target: {fileID: 1863620129342110328, guid: 7d9f1028ab0c6a64ebe833643141c3bf, type: 3}
       propertyPath: flashCooldown
       value: 5
@@ -6512,9 +6491,6 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 6024854721440814743, guid: 7d9f1028ab0c6a64ebe833643141c3bf, type: 3}
       insertIndex: -1
       addedObject: {fileID: 126069940}
-    - targetCorrespondingSourceObject: {fileID: 6752112893786543095, guid: 7d9f1028ab0c6a64ebe833643141c3bf, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 986004176}
   m_SourcePrefab: {fileID: 100100000, guid: 7d9f1028ab0c6a64ebe833643141c3bf, type: 3}
 --- !u!1 &1057124724
 GameObject:

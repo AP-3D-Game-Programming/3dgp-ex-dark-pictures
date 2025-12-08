@@ -40,7 +40,7 @@ public class BatteryLife : MonoBehaviour
         if (newZ < 0)
             return false;
         if (newZ == 0f)
-            SetNewBatteryLife(-1);
+            SetNewBatteryLife(0f);
         else SetNewBatteryLife(newZ);
         return true;
     }
