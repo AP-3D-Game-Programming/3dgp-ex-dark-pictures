@@ -9,7 +9,6 @@ public class Door : MonoBehaviour
     public float openAngle = -90f; // How much the door will rotate (negative for opposite direction)
     public float openSpeed = 2f;   // How fast the door opens/closes
     public bool isOpen = false;    // Tracks whether the door is open or closed
-
     // --- Internal variables ---
     private Quaternion closedRotation; // The door's rotation when closed
     private Quaternion openRotation;   // The door's rotation when open
@@ -47,4 +46,5 @@ public class Door : MonoBehaviour
             return; 
         isOpen = !isOpen; // Switch between true/false
     }
+    
 }

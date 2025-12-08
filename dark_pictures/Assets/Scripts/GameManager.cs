@@ -10,6 +10,9 @@ public class GameManager : MonoBehaviour
 	public GameObject realMonster;
 
 	public bool isGameOver = false;
+	
+	[Header("StartScreen")]
+	[SerializeField] private GameObject startScreen;
 
 	void Start()
 	{
@@ -28,6 +31,8 @@ public class GameManager : MonoBehaviour
 			realMonster.SetActive(true);
 		}
 
+		Cursor.lockState = CursorLockMode.Locked;
+		Cursor.visible = false;
 	}
 
 	public void GameOver()
@@ -46,5 +51,11 @@ public class GameManager : MonoBehaviour
 	{
 		Debug.Log("Restarting...");
 		SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+		Cursor.lockState = CursorLockMode.None;
+		Cursor.visible = true;
 	}
+	public void RemoveStartScreen()
+    {
+		startScreen.SetActive(false);
+    }
 }

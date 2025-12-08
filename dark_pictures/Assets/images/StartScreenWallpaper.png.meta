@@ -1,19 +1,12 @@
 fileFormatVersion: 2
-guid: 0979f62e4dd0fbd4893ceecc81d8ce54
-AssetOrigin:
-  serializedVersion: 1
-  productId: 193317
-  packageName: Untitled
-  packageVersion: 1.0
-  assetPath: Assets/asset_store/key_lock/textures/key/m_key_01_blue_bc.png
-  uploadId: 428060
+guid: a5fcf7c8101abf040be4f7bb5cc6c2c1
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
     mipMapMode: 0
-    enableMipMap: 0
+    enableMipMap: 1
     sRGBTexture: 1
     linearTexture: 0
     fadeOut: 0
@@ -72,11 +65,11 @@ TextureImporter:
   ignorePngGamma: 0
   applyGammaDecoding: 0
   swizzle: 50462976
-  cookieLightType: 1
+  cookieLightType: 0
   platformSettings:
   - serializedVersion: 4
     buildTarget: DefaultTexturePlatform
-    maxTextureSize: 1024
+    maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
     textureCompression: 1
