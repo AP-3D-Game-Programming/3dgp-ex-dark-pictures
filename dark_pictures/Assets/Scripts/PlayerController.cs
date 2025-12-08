@@ -49,6 +49,8 @@ public class PlayerController : MonoBehaviour
     public AudioClip heartbeatSound; // Vak voor hartslaggeluid
     public Transform entity; // Vak voor entity
     public float maxHeartbeatDistance = 20f; // Maximale afstand waar hartslag start
+    public float minHeartbeatVolume = 0.1f; // Minimum volume op max afstand
+    public float maxHeartbeatVolume = 1.0f; // Maximum volume op dichtste afstand
     private AudioSource heartbeatAudioSource;
 
 	void Start()
@@ -227,8 +229,8 @@ public class PlayerController : MonoBehaviour
     /// Handles the heartbeat sound effect based on proximity to entity.
     /// </summary>
     /// <remarks>
-    /// The heartbeat loops continuously when the player is within range of the entity
-    /// and stops automatically when the player moves out of range.
+    /// The heartbeat loops continuously when the player is within range of the entity.
+    /// Volume is adjusted based on distance - louder when closer, quieter when further away.
     /// </remarks>
     void HandleHeartbeat()
     {
@@ -236,10 +238,17 @@ public class PlayerController : MonoBehaviour
 
         // Bereken afstand tot entity
         float distance = Vector3.Distance(transform.position, entity.position);
+        bool isInRange = distance <= maxHeartbeatDistance;
 
-        // Als we binnen max afstand zijn - start loop
-        if (distance <= maxHeartbeatDistance)
+        // Als we binnen max afstand zijn - start/update loop
+        if (isInRange)
         {
+            // Bereken volume based op afstand (dichter = luider)
+            // Inverse lerp: 0 bij maxDistance, 1 bij distance 0
+            float normalizedDistance = Mathf.Clamp01(distance / maxHeartbeatDistance);
+            float targetVolume = Mathf.Lerp(maxHeartbeatVolume, minHeartbeatVolume, normalizedDistance);
+            heartbeatAudioSource.volume = targetVolume;
+
             if (!heartbeatAudioSource.isPlaying)
             {
                 heartbeatAudioSource.clip = heartbeatSound;
@@ -247,7 +256,7 @@ public class PlayerController : MonoBehaviour
                 heartbeatAudioSource.Play();
             }
         }
-        // Buiten bereik - stop loop
+        // Buiten bereik - stop audio
         else
         {
             if (heartbeatAudioSource.isPlaying)
@@ -256,5 +265,33 @@ public class PlayerController : MonoBehaviour
                 heartbeatAudioSource.loop = false;
             }
         }
+    }
+
+    /// <summary>
+    /// Draws gizmos in the Scene view to visualize the heartbeat detection range.
+    /// </summary>
+    void OnDrawGizmos()
+    {
+        // Check of entity is toegewezen (werkt ook in edit mode)
+        if (entity == null) return;
+
+        float distance = Vector3.Distance(transform.position, entity.position);
+        bool isInRange = distance <= maxHeartbeatDistance;
+
+        // Teken lijn tussen player en entity
+        Gizmos.color = isInRange ? Color.red : Color.gray;
+        Gizmos.DrawLine(transform.position, entity.position);
+
+        // Teken sphere rond entity om max afstand te laten zien
+        Gizmos.color = isInRange ? new Color(1f, 0f, 0f, 0.3f) : new Color(0.5f, 0.5f, 0.5f, 0.2f);
+        Gizmos.DrawWireSphere(entity.position, maxHeartbeatDistance);
+
+        // Teken kleine sphere op entity positie
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawSphere(entity.position, 0.5f);
+
+        // Teken kleine sphere op player positie
+        Gizmos.color = isInRange ? Color.red : Color.green;
+        Gizmos.DrawSphere(transform.position, 0.3f);
     }
 }

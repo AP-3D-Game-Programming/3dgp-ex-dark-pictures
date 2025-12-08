@@ -1932,7 +1932,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 68, y: -56}
+  m_AnchoredPosition: {x: 68, y: -189.3}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &383597455
@@ -2786,7 +2786,7 @@ Transform:
   m_GameObject: {fileID: 471454048}
   serializedVersion: 2
   m_LocalRotation: {x: 0.40821788, y: -0.23456968, z: 0.10938163, w: 0.8754261}
-  m_LocalPosition: {x: 42.06, y: 22.8, z: 17.36}
+  m_LocalPosition: {x: 42.86, y: 13.09, z: 3.4}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2833,7 +2833,7 @@ Light:
   m_Type: 2
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_Intensity: 100
-  m_Range: 100
+  m_Range: 15
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
   m_CookieSize: 10
@@ -7356,7 +7356,7 @@ MonoBehaviour:
   startHidden: 0
   animationSpeed: 5
   activePosition: {x: 0.3, y: 0.6, z: 1.042}
-  hiddenPosition: {x: 0, y: 0, z: 0}
+  hiddenPosition: {x: 0, y: -1.98, z: -2.5}
   isPhoneUp: 0
 --- !u!114 &1289835395 stripped
 MonoBehaviour:
@@ -9229,7 +9229,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1676634626
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9237,7 +9237,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1676634625}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b9b7549fff29d0148ac693403b500903, type: 3}
   m_Name: 
