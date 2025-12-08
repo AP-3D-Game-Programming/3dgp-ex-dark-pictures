@@ -20,6 +20,8 @@ public class CameraFlash : MonoBehaviour
 	private float nextFlashTime = 0f;
 
 	[SerializeField] GameManager gameManager;
+	
+	[SerializeField] BatteryLife batteryLife;
 
 	void Start()
 	{
@@ -49,6 +51,9 @@ public class CameraFlash : MonoBehaviour
 
 	void TriggerFlash()
 	{
+		if (!batteryLife.DecreaseBattery(10) )
+            return;
+
 		flashLight.intensity = flashIntensity;
 		if (audioSource != null && flashSound != null) audioSource.PlayOneShot(flashSound);
 
