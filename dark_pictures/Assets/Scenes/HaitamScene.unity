@@ -235,6 +235,10 @@ PrefabInstance:
       propertyPath: minStaminaForBreathing
       value: 30
       objectReference: {fileID: 0}
+    - target: {fileID: 2668942414054340117, guid: 7d9f1028ab0c6a64ebe833643141c3bf, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: e823cd5b5d27c0f4b8256e7c12ee3e6d, type: 2}
     - target: {fileID: 4351379898236352973, guid: 7d9f1028ab0c6a64ebe833643141c3bf, type: 3}
       propertyPath: m_Layer
       value: 3
@@ -495,7 +499,7 @@ ParticleSystemRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10308, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: e823cd5b5d27c0f4b8256e7c12ee3e6d, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -5570,6 +5574,7 @@ MonoBehaviour:
   audioSource: {fileID: 0}
   flashSound: {fileID: 0}
   gameManager: {fileID: 5343657727408504871, guid: 36ce631854afc0a498659dd56f1f8fab, type: 3}
+  batteryLife: {fileID: 0}
 --- !u!4 &1707131791 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1279662824994058628, guid: 7d9f1028ab0c6a64ebe833643141c3bf, type: 3}

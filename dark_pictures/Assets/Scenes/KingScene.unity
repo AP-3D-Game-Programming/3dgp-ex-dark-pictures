@@ -2089,6 +2089,10 @@ PrefabInstance:
       propertyPath: gameManager
       value: 
       objectReference: {fileID: 826099783}
+    - target: {fileID: 2668942414054340117, guid: 7d9f1028ab0c6a64ebe833643141c3bf, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: e823cd5b5d27c0f4b8256e7c12ee3e6d, type: 2}
     - target: {fileID: 4595242755913112762, guid: 7d9f1028ab0c6a64ebe833643141c3bf, type: 3}
       propertyPath: m_Name
       value: BeanPlayer
@@ -4026,7 +4030,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
   endScreen: {fileID: 0}
+  realMonster: {fileID: 0}
   isGameOver: 0
+  startScreen: {fileID: 0}
 --- !u!4 &826099784
 Transform:
   m_ObjectHideFlags: 0

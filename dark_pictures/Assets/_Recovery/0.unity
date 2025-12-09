@@ -3977,7 +3977,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
   endScreen: {fileID: 0}
+  realMonster: {fileID: 0}
   isGameOver: 0
+  startScreen: {fileID: 0}
 --- !u!4 &826099784
 Transform:
   m_ObjectHideFlags: 0
