@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 684987081596905976}
   - component: {fileID: 6538410221471749377}
   - component: {fileID: 4273613877504239819}
-  - component: {fileID: 2076629449603143178}
   m_Layer: 0
   m_Name: a door1
   m_TagString: Untagged
@@ -110,25 +109,7 @@ MonoBehaviour:
   leftDoorCollider: {fileID: 7414207656564958353}
   rightDoorCollider: {fileID: 7554523127687461919}
   openAngle: 90
-  rotationSpeed: 2
---- !u!114 &2076629449603143178
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1457838970446620}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0c53bca0d98134f43b421628d74c39e6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::MainDoorController
-  leftDoor: {fileID: 3575895962339517008}
-  rightDoor: {fileID: 3575895962339517010}
-  leftDoorCollider: {fileID: 7414207656564958353}
-  rightDoorCollider: {fileID: 7554523127687461919}
-  openAngle: 90
-  rotationSpeed: 2
+  rotationSpeed: 3
 --- !u!1 &3575895962340015728
 GameObject:
   m_ObjectHideFlags: 0
