@@ -4,260 +4,328 @@ using System.Collections;
 
 public class EntityAI : MonoBehaviour
 {
-	[Header("References")]
-	public Transform player;
-	public Light playerFlashLight;
+    [Header("Smart Patrol")]
+    public int maxPatrolMemory = 5;
+    private System.Collections.Generic.List<Vector3> visitedPatrolPoints = new System.Collections.Generic.List<Vector3>();
+    
+    [Header("Sound Detection")]
+    public float soundDetectionRange = 15f;
+    public float minPlayerSpeedToHear = 5f; // Sprint speed threshold
+    
+    [Header("References")]
+    public Transform player;
+    public Light playerFlashLight;
 
-	[Header("Left and right eye of entity")]
-	public Renderer[] eyeRenderers;
-	public Light eyeLight;
+    [Header("Left and right eye of entity")]
+    public Renderer[] eyeRenderers;
+    public Light eyeLight;
 
-	[Header("Settings")]
-	public float patrolSpeed = 3f;
-	public float chaseSpeed = 8f;
+    [Header("Settings")]
+    public float patrolSpeed = 3f;
+    public float chaseSpeed = 8f;
 
-	[Header("Detection")]
-	public float darkDetectionRange = 8f;
-	public float lightDetectionRange = 20f;
-	public LayerMask visionMask;
+    [Header("Detection")]
+    public float darkDetectionRange = 8f;
+    public float lightDetectionRange = 20f;
+    public LayerMask visionMask;
 
-	[Header("Patrol Settings")]
-	public float patrolRadius = 50f;
+    [Header("Patrol Settings")]
+    public float patrolRadius = 50f;
 
-	private NavMeshAgent agent;
-	private bool isChasing = false;
-	private Vector3 patrolDestination;
-	private float stuckTimer = 0f;
-	private bool isStunned = false;
+    [Header("Investigation")]
+    public float investigationTime = 5f;
+    public float investigationRadius = 10f;
 
-	private Color originalColor;
-	private Color stunColor = Color.yellow; 
-	public float stunBrightness = 5f;
+    private bool isInvestigating = false;
+    private Vector3 lastKnownPlayerPosition;
+    private float investigateTimer = 0f;
 
-	[SerializeField] GameManager gameManager;	
+    private NavMeshAgent agent;
+    private bool isChasing = false;
+    private Vector3 patrolDestination;
+    private float stuckTimer = 0f;
+    private bool isStunned = false;
 
-	void Start()
-	{
-		agent = GetComponent<NavMeshAgent>();
-		if (visionMask == 0) visionMask = -1;
+    private Color originalColor;
+    private Color stunColor = Color.yellow; 
+    public float stunBrightness = 5f;
 
-		// save original eye color
-		if (eyeRenderers.Length > 0)
-		{
-			originalColor = eyeRenderers[0].material.GetColor("_EmissionColor");
+    [SerializeField] GameManager gameManager;
 
-			if (eyeLight != null)
-			{
-				eyeLight.color = originalColor;
-				eyeLight.intensity = 2f;
-				eyeLight.range = 2f;
-			}
-		}
+    void Start()
+    {
+        agent = GetComponent<NavMeshAgent>();
+        if (visionMask == 0) visionMask = -1;
 
-		SetNewPatrolPoint();
-	}
+        // save original eye color
+        if (eyeRenderers.Length > 0)
+        {
+            originalColor = eyeRenderers[0].material.GetColor("_EmissionColor");
 
-	void Update()
-	{
-		if (isStunned) return;
+            if (eyeLight != null)
+            {
+                eyeLight.color = originalColor;
+                eyeLight.intensity = 2f;
+                eyeLight.range = 2f;
+            }
+        }
 
-		if (CanSeePlayer())
-		{
-			ChasePlayer();
-		}
-		else
-		{
-			Patrol();
-		}
-	}
+        SetNewPatrolPoint();
+    }
 
-	public void StunEntity(float duration)
-	{
-		if (isStunned) return;
-		StartCoroutine(StunRoutine(duration));
-	}
+    void Update()
+    {
+        if (isStunned) return;
 
-	/// <summary>
-	/// Routine to handle stunning the entity
-	/// </summary>
-	/// <param name="duration"></param>
-	IEnumerator StunRoutine(float duration)
-	{
-		isStunned = true;
+        if (CanSeePlayer())
+        {
+            lastKnownPlayerPosition = player.position;
+            ChasePlayer();
+        }
+        else if (CanHearPlayer())
+        {
+            // Heard the player! Investigate sound
+            Debug.Log("Heard player movement!");
+            StartInvestigation();
+        }
+        else if (isChasing)
+        {
+            StartInvestigation();
+        }
+        else
+        {
+            Patrol();
+        }
+    }
 
-		// last known position at stun (Where the player is right now)
-		Vector3 lastKnownPos = player.position;
+    bool CanHearPlayer()
+    {
+        float distanceToPlayer = Vector3.Distance(transform.position, player.position);
+        if (distanceToPlayer > soundDetectionRange) return false;
+        
+        // Check if player is moving fast (sprinting)
+        PlayerController pc = player.GetComponent<PlayerController>();
+        if (pc != null)
+        {
+            // If player is sprinting, AI can hear them
+            CharacterController cc = player.GetComponent<CharacterController>();
+            if (cc != null && cc.velocity.magnitude > minPlayerSpeedToHear)
+            {
+                lastKnownPlayerPosition = player.position;
+                return true;
+            }
+        }
+        
+        return false;
+    }
 
-		agent.isStopped = true;
-		agent.velocity = Vector3.zero;
-		UpdateEyeVisuals(stunColor);
+    public void StunEntity(float duration)
+    {
+        if (isStunned) return;
+        StartCoroutine(StunRoutine(duration));
+    }
 
-		yield return new WaitForSeconds(duration);
+    IEnumerator StunRoutine(float duration)
+    {
+        isStunned = true;
 
-		isStunned = false;
-		agent.isStopped = false;
-		UpdateEyeVisuals(originalColor);
+        // last known position at stun (Where the player is right now)
+        Vector3 lastKnownPos = player.position;
 
-		// If we can see the player NOW, chase them immediately.
-		if (CanSeePlayer())
-		{
-			ChasePlayer();
-		}
-		else
-		{
-			// If we CAN'T see them (they hid behind a wall), 
-			// go to where we last saw them (Investigate).
-			agent.SetDestination(lastKnownPos);
-		}
-	}
+        agent.isStopped = true;
+        agent.velocity = Vector3.zero;
+        UpdateEyeVisuals(stunColor);
 
-	/// <summary>
-	/// Update the eye color and glow color
-	/// </summary>
-	/// <param name="targetColor"></param>
-	void UpdateEyeVisuals(Color targetColor)
-	{
-		if (eyeLight != null)
-		{
-			float maxColorComponent = targetColor.maxColorComponent;
-			if (maxColorComponent > 1f)
-			{
-				eyeLight.color = targetColor / maxColorComponent;
-			}
-			else
-				eyeLight.color = targetColor;
-		}
+        yield return new WaitForSeconds(duration);
 
-		if (eyeRenderers != null)
-		{
-			Color finalMaterialColor = targetColor;
+        isStunned = false;
+        agent.isStopped = false;
+        UpdateEyeVisuals(originalColor);
 
-			if (targetColor.maxColorComponent <= 1f)
-			{
-				finalMaterialColor = targetColor * stunBrightness;
-			}
+        // If we can see the player NOW, chase them immediately.
+        if (CanSeePlayer())
+        {
+            ChasePlayer();
+        }
+        else
+        {
+            // If we CAN'T see them (they hid behind a wall), 
+            // go to where we last saw them (Investigate).
+            agent.SetDestination(lastKnownPos);
+        }
+    }
 
-			foreach (Renderer r in eyeRenderers)
-			{
-				r.material.EnableKeyword("_EMISSION");
-				r.material.SetColor("_EmissionColor", finalMaterialColor);
-			}
-		}
-	}
+    void UpdateEyeVisuals(Color targetColor)
+    {
+        if (eyeLight != null)
+        {
+            float maxColorComponent = targetColor.maxColorComponent;
+            if (maxColorComponent > 1f)
+            {
+                eyeLight.color = targetColor / maxColorComponent;
+            }
+            else
+                eyeLight.color = targetColor;
+        }
 
-	/// <summary>
-	/// This method makes sure that the entity only chases if it sees the player, not just based on distance.
-	/// </summary>
-	/// <returns>
-	/// True if the entity can see the player, false otherwise.
-	/// </returns>
-	bool CanSeePlayer()
-	{
-		float distanceToPlayer = Vector3.Distance(transform.position, player.position);
-		float currentRange = (playerFlashLight.intensity > 1f) ? lightDetectionRange : darkDetectionRange;
+        if (eyeRenderers != null)
+        {
+            Color finalMaterialColor = targetColor;
 
-		if (distanceToPlayer > currentRange) return false;
+            if (targetColor.maxColorComponent <= 1f)
+            {
+                finalMaterialColor = targetColor * stunBrightness;
+            }
 
-		Vector3 origin = transform.position + Vector3.up * 1.0f;
-		Vector3 target = player.position + Vector3.up * 1.0f;
-		Vector3 direction = (target - origin).normalized;
+            foreach (Renderer r in eyeRenderers)
+            {
+                r.material.EnableKeyword("_EMISSION");
+                r.material.SetColor("_EmissionColor", finalMaterialColor);
+            }
+        }
+    }
 
-		RaycastHit hit;
-		if (Physics.Raycast(origin, direction, out hit, currentRange, visionMask))
-		{
-			if (hit.transform == player || hit.transform.IsChildOf(player))
-			{
-				return true;
-			}
-		}
-		return false;
-	}
+    bool CanSeePlayer()
+    {
+        float distanceToPlayer = Vector3.Distance(transform.position, player.position);
+        float currentRange = (playerFlashLight.intensity > 1f) ? lightDetectionRange : darkDetectionRange;
 
-	void ChasePlayer()
-	{
-		isChasing = true;
-		stuckTimer = 0f;
-		agent.speed = chaseSpeed;
-		agent.SetDestination(player.position);
-	}
+        if (distanceToPlayer > currentRange) return false;
 
-	/// <summary>
-	/// This method handles the patrolling behavior of the entity.
-	/// </summary>
-	/// <remarks>
-	/// This method has a stuck timer so it doesn't get stuck on obstacles. If the agent is not moving for more than 2 seconds,
-	/// it will pick a new patrol point.
-	/// </remarks>
-	void Patrol()
-	{
-		isChasing = false;
-		agent.speed = patrolSpeed;
+        Vector3 origin = transform.position + Vector3.up * 1.0f;
+        Vector3 target = player.position + Vector3.up * 1.0f;
+        Vector3 direction = (target - origin).normalized;
 
-		if (!agent.pathPending && agent.remainingDistance < 0.5f)
-		{
-			SetNewPatrolPoint();
-			stuckTimer = 0f;
-		}
+        RaycastHit hit;
+        if (Physics.Raycast(origin, direction, out hit, currentRange, visionMask))
+        {
+            if (hit.transform == player || hit.transform.IsChildOf(player))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
 
-		if (agent.velocity.sqrMagnitude < 0.1f && agent.remainingDistance > 0.5f)
-		{
-			stuckTimer += Time.deltaTime;
-			if (stuckTimer > 2.0f)
-			{
-				SetNewPatrolPoint();
-				stuckTimer = 0f;
-			}
-		}
-		else
-		{
-			stuckTimer = 0f;
-		}
-	}
+    void ChasePlayer()
+    {
+        isChasing = true;
+        stuckTimer = 0f;
+        agent.speed = chaseSpeed;
+        agent.SetDestination(player.position);
+    }
 
-	/// <summary>
-	/// Sets a new patrol point for the agent within a specified radius.
-	/// </summary>
-	/// <remarks>
-	/// This method attempts to find a random valid position on the NavMesh (where the ai can walk) within the patrol radius.  If a
-	/// valid position is found and a complete path to it can be calculated, the entity's destination  is updated to the new
-	/// patrol point. The method performs up to 10 attempts to find a valid patrol point. This prevents it being stuck
-	/// </remarks>
-	void SetNewPatrolPoint()
-	{
-		for (int i = 0; i < 10; i++)
-		{
-			Vector3 randomDirection = Random.insideUnitSphere * patrolRadius;
-			randomDirection += transform.position;
+    void Patrol()
+    {
+        isChasing = false;
+        agent.speed = patrolSpeed;
 
-			NavMeshHit hit;
-			if (NavMesh.SamplePosition(randomDirection, out hit, patrolRadius, NavMesh.AllAreas))
-			{
-				NavMeshPath path = new NavMeshPath();
-				agent.CalculatePath(hit.position, path);
+        // If investigating, stay at the spot for a bit
+        if (isInvestigating)
+        {
+            investigateTimer -= Time.deltaTime;
+            if (investigateTimer <= 0f)
+            {
+                isInvestigating = false;
+                SetNewPatrolPoint();
+            }
+            return;
+        }
 
-				if (path.status == NavMeshPathStatus.PathComplete)
-				{
-					patrolDestination = hit.position;
-					agent.SetDestination(patrolDestination);
-					return;
-				}
-			}
-		}
-	}
+        if (!agent.pathPending && agent.remainingDistance < 0.5f)
+        {
+            SetNewPatrolPoint();
+            stuckTimer = 0f;
+        }
 
-	void OnDrawGizmos()
-	{
-		Gizmos.color = Color.green;
-		Gizmos.DrawWireSphere(transform.position, darkDetectionRange);
-		Gizmos.color = Color.red;
-		Gizmos.DrawWireSphere(transform.position, lightDetectionRange);
-		Gizmos.color = Color.yellow;
-		Gizmos.DrawWireSphere(transform.position, patrolRadius);
-	}
+        if (agent.velocity.sqrMagnitude < 0.1f && agent.remainingDistance > 0.5f)
+        {
+            stuckTimer += Time.deltaTime;
+            if (stuckTimer > 2.0f)
+            {
+                SetNewPatrolPoint();
+                stuckTimer = 0f;
+            }
+        }
+        else
+        {
+            stuckTimer = 0f;
+        }
+    }
+
+    void StartInvestigation()
+    {
+        isChasing = false;
+        isInvestigating = true;
+        investigateTimer = investigationTime;
+        
+        // Go to last known position
+        agent.SetDestination(lastKnownPlayerPosition);
+        
+        Debug.Log("Lost player! Investigating last known position...");
+    }
+
+    void SetNewPatrolPoint()
+    {
+        for (int i = 0; i < 10; i++)
+        {
+            Vector3 randomDirection = Random.insideUnitSphere * patrolRadius;
+            randomDirection += transform.position;
+
+            NavMeshHit hit;
+            if (NavMesh.SamplePosition(randomDirection, out hit, patrolRadius, NavMesh.AllAreas))
+            {
+                // Check if we've been here recently
+                bool tooCloseToRecent = false;
+                foreach (Vector3 visited in visitedPatrolPoints)
+                {
+                    if (Vector3.Distance(hit.position, visited) < 5f)
+                    {
+                        tooCloseToRecent = true;
+                        break;
+                    }
+                }
+                
+                if (tooCloseToRecent) continue;
+
+                NavMeshPath path = new NavMeshPath();
+                agent.CalculatePath(hit.position, path);
+
+                if (path.status == NavMeshPathStatus.PathComplete)
+                {
+                    patrolDestination = hit.position;
+                    agent.SetDestination(patrolDestination);
+
+                    // Remember this point
+                    visitedPatrolPoints.Add(hit.position);
+                    if (visitedPatrolPoints.Count > maxPatrolMemory)
+                    {
+                        visitedPatrolPoints.RemoveAt(0);
+                    }
+
+                    return;
+                }
+            }
+        }
+    }
+
+    void OnDrawGizmos()
+    {
+        Gizmos.color = Color.green;
+        Gizmos.DrawWireSphere(transform.position, darkDetectionRange);
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, lightDetectionRange);
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireSphere(transform.position, patrolRadius);
+        Gizmos.color = Color.cyan;
+        Gizmos.DrawWireSphere(transform.position, soundDetectionRange);
+    }
+    
     void OnCollisionEnter(Collision collision)
     {
-		if (collision.gameObject.CompareTag("Player") ) {
-			gameManager.GameOver();
+        if (collision.gameObject.CompareTag("Player"))
+        {
+            gameManager.GameOver();
         }
     }
 }
