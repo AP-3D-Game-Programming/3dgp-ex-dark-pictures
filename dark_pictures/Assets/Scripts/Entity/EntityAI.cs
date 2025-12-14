@@ -34,9 +34,15 @@ public class EntityAI : MonoBehaviour
 	private Color stunColor = Color.yellow; 
 	public float stunBrightness = 5f;
 
-	[SerializeField] GameManager gameManager;	
+	[SerializeField] GameManager gameManager;
 
-	void Start()
+    [Header("Audio")]
+    public AudioClip[] screamSounds;
+    public float screamVolume = 1.0f;
+    private AudioSource screamAudioSource;
+    private bool hasScreamedAtPlayer = false;
+
+    void Start()
 	{
 		agent = GetComponent<NavMeshAgent>();
 		if (visionMask == 0) visionMask = -1;
@@ -55,7 +61,12 @@ public class EntityAI : MonoBehaviour
 		}
 
 		SetNewPatrolPoint();
-	}
+
+        screamAudioSource = gameObject.AddComponent<AudioSource>();
+        screamAudioSource.playOnAwake = false;
+        screamAudioSource.spatialBlend = 1f;
+        screamAudioSource.maxDistance = 50f;
+    }
 
 	void Update()
 	{
@@ -167,7 +178,9 @@ public class EntityAI : MonoBehaviour
 		{
 			if (hit.transform == player || hit.transform.IsChildOf(player))
 			{
-				return true;
+                if (!hasScreamedAtPlayer) { PlayScream(); hasScreamedAtPlayer = true; }
+
+                return true;
 			}
 		}
 		return false;
@@ -190,7 +203,8 @@ public class EntityAI : MonoBehaviour
 	/// </remarks>
 	void Patrol()
 	{
-		isChasing = false;
+        hasScreamedAtPlayer = false;
+        isChasing = false;
 		agent.speed = patrolSpeed;
 
 		if (!agent.pathPending && agent.remainingDistance < 0.5f)
@@ -260,4 +274,13 @@ public class EntityAI : MonoBehaviour
 			gameManager.GameOver();
         }
     }
+
+    void PlayScream()
+    {
+        if (screamSounds != null && screamSounds.Length > 0 && screamAudioSource != null)
+        {
+            screamAudioSource.PlayOneShot(screamSounds[Random.Range(0, screamSounds.Length)], screamVolume);
+        }
+    }
+
 }

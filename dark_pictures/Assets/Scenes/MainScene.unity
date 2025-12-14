@@ -9611,6 +9611,9 @@ MonoBehaviour:
   patrolRadius: 50
   stunBrightness: 5
   gameManager: {fileID: 1987337003}
+  screamSounds:
+  - {fileID: 8300000, guid: 1d54e94f64b1e8a44b0a6e6675804f9e, type: 3}
+  screamVolume: 1
 --- !u!195 &1676634627
 NavMeshAgent:
   m_ObjectHideFlags: 0
