@@ -51,8 +51,8 @@ public class CameraFlash : MonoBehaviour
 
 	void TriggerFlash()
 	{
-		if (!batteryLife.DecreaseBattery(10) )
-            return;
+		if (batteryLife != null && !batteryLife.DecreaseBattery(10))
+			return;
 
 		flashLight.intensity = flashIntensity;
 		if (audioSource != null && flashSound != null) audioSource.PlayOneShot(flashSound);
