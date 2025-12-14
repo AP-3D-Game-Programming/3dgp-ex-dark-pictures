@@ -6384,10 +6384,6 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2596628061070004578, guid: 7d9f1028ab0c6a64ebe833643141c3bf, type: 3}
-      propertyPath: footstepVolume
-      value: 0.25
-      objectReference: {fileID: 0}
-    - target: {fileID: 2596628061070004578, guid: 7d9f1028ab0c6a64ebe833643141c3bf, type: 3}
       propertyPath: heartbeatSound
       value: 
       objectReference: {fileID: 8300000, guid: 502e65b901b25fd42abc9ea582344440, type: 3}
@@ -6399,22 +6395,6 @@ PrefabInstance:
       propertyPath: outOfBreathSound
       value: 
       objectReference: {fileID: 8300000, guid: 5e6365e3a47a5604b9c4defa63bf3471, type: 3}
-    - target: {fileID: 2596628061070004578, guid: 7d9f1028ab0c6a64ebe833643141c3bf, type: 3}
-      propertyPath: walkFootsteps.Array.size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2596628061070004578, guid: 7d9f1028ab0c6a64ebe833643141c3bf, type: 3}
-      propertyPath: sprintFootsteps.Array.size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2596628061070004578, guid: 7d9f1028ab0c6a64ebe833643141c3bf, type: 3}
-      propertyPath: 'walkFootsteps.Array.data[0]'
-      value: 
-      objectReference: {fileID: 8300000, guid: ca463bc5ce967ae418e34e02d597a7f4, type: 3}
-    - target: {fileID: 2596628061070004578, guid: 7d9f1028ab0c6a64ebe833643141c3bf, type: 3}
-      propertyPath: 'sprintFootsteps.Array.data[0]'
-      value: 
-      objectReference: {fileID: 8300000, guid: a5e54181a5c670748bf387cf6d3d84f3, type: 3}
     - target: {fileID: 2668942414054340117, guid: 7d9f1028ab0c6a64ebe833643141c3bf, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 

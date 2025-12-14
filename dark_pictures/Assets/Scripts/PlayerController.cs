@@ -53,7 +53,18 @@ public class PlayerController : MonoBehaviour
     public float maxHeartbeatVolume = 1.0f; // Maximum volume op dichtste afstand
     private AudioSource heartbeatAudioSource;
 
-	void Start()
+    [Header("Footsteps")]
+    public AudioClip[] walkFootsteps;
+    public AudioClip[] sprintFootsteps;
+    public float walkStepInterval = 0.5f;
+    public float sprintStepInterval = 0.3f;
+    public float footstepVolume = 0.3f; // Lager volume zodat het niet overheerst
+    private AudioSource footstepAudioSource;
+    private float footstepTimer = 0f;
+    private bool lastWasSprinting = false;
+
+
+    void Start()
     {
         controller = GetComponent<CharacterController>();
         Cursor.lockState = CursorLockMode.Locked;
@@ -76,7 +87,14 @@ public class PlayerController : MonoBehaviour
         heartbeatAudioSource.spatialBlend = 0f; // 2D geluid
         heartbeatAudioSource.loop = false;
 
-		defaultHeight = controller.height;
+        // Setup AudioSource voor footsteps
+        footstepAudioSource = gameObject.AddComponent<AudioSource>();
+        footstepAudioSource.playOnAwake = false;
+        footstepAudioSource.spatialBlend = 0f;
+        footstepAudioSource.volume = footstepVolume;
+        footstepAudioSource.loop = false;
+
+        defaultHeight = controller.height;
 
         if(playerCamera == null) playerCamera = GetComponentInChildren<Camera>();
     }
@@ -197,6 +215,8 @@ public class PlayerController : MonoBehaviour
         
         velocity.y += gravity * Time.deltaTime;
         controller.Move(velocity * Time.deltaTime);
+
+        HandleFootsteps(input, isGrounded, isSprinting);
     }
 
     /// <summary>
@@ -294,4 +314,57 @@ public class PlayerController : MonoBehaviour
         Gizmos.color = isInRange ? Color.red : Color.green;
         Gizmos.DrawSphere(transform.position, 0.3f);
     }
+
+    void HandleFootsteps(Vector2 input, bool isGrounded, bool isSprinting)
+    {
+        if (!isGrounded || input.magnitude < 0.1f)
+        {
+            footstepTimer = 0f;
+            lastWasSprinting = false;
+            if (footstepAudioSource != null && footstepAudioSource.isPlaying)
+            {
+                footstepAudioSource.Stop();
+            }
+            return;
+        }
+
+        AudioClip[] footsteps = isSprinting ? sprintFootsteps : walkFootsteps;
+        float interval = isSprinting ? sprintStepInterval : walkStepInterval;
+
+        if (footsteps == null || footsteps.Length == 0 || footstepAudioSource == null)
+            return;
+
+        // DIRECT nieuwe stap spelen bij sprint wissel
+        if (isSprinting != lastWasSprinting)
+        {
+            lastWasSprinting = isSprinting;
+
+            // Stop huidige geluid en speel direct nieuwe
+            if (footstepAudioSource.isPlaying)
+            {
+                footstepAudioSource.Stop();
+            }
+
+            AudioClip clip = footsteps[Random.Range(0, footsteps.Length)];
+            if (clip != null)
+            {
+                footstepAudioSource.PlayOneShot(clip, footstepVolume);
+            }
+            footstepTimer = 0f;
+            return; // Skip rest van de functie
+        }
+
+        footstepTimer += Time.deltaTime;
+
+        if (footstepTimer >= interval && !footstepAudioSource.isPlaying)
+        {
+            AudioClip clip = footsteps[Random.Range(0, footsteps.Length)];
+            if (clip != null)
+            {
+                footstepAudioSource.PlayOneShot(clip, footstepVolume);
+            }
+            footstepTimer = 0f;
+        }
+    }
+
 }
