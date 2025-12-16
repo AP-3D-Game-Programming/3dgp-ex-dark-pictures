@@ -200,6 +200,14 @@ PrefabInstance:
       value: 12
       objectReference: {fileID: 0}
     - target: {fileID: 2596628061070004578, guid: 7d9f1028ab0c6a64ebe833643141c3bf, type: 3}
+      propertyPath: playerCamera
+      value: 
+      objectReference: {fileID: 1453569328}
+    - target: {fileID: 2596628061070004578, guid: 7d9f1028ab0c6a64ebe833643141c3bf, type: 3}
+      propertyPath: footstepVolume
+      value: 0.25
+      objectReference: {fileID: 0}
+    - target: {fileID: 2596628061070004578, guid: 7d9f1028ab0c6a64ebe833643141c3bf, type: 3}
       propertyPath: heartbeatSound
       value: 
       objectReference: {fileID: 8300000, guid: 502e65b901b25fd42abc9ea582344440, type: 3}
@@ -235,6 +243,26 @@ PrefabInstance:
       propertyPath: minStaminaForBreathing
       value: 30
       objectReference: {fileID: 0}
+    - target: {fileID: 2596628061070004578, guid: 7d9f1028ab0c6a64ebe833643141c3bf, type: 3}
+      propertyPath: walkFootsteps.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2596628061070004578, guid: 7d9f1028ab0c6a64ebe833643141c3bf, type: 3}
+      propertyPath: sprintFootsteps.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2596628061070004578, guid: 7d9f1028ab0c6a64ebe833643141c3bf, type: 3}
+      propertyPath: 'walkFootsteps.Array.data[0]'
+      value: 
+      objectReference: {fileID: 8300000, guid: ca463bc5ce967ae418e34e02d597a7f4, type: 3}
+    - target: {fileID: 2596628061070004578, guid: 7d9f1028ab0c6a64ebe833643141c3bf, type: 3}
+      propertyPath: 'sprintFootsteps.Array.data[0]'
+      value: 
+      objectReference: {fileID: 8300000, guid: a5e54181a5c670748bf387cf6d3d84f3, type: 3}
+    - target: {fileID: 2668942414054340117, guid: 7d9f1028ab0c6a64ebe833643141c3bf, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: e823cd5b5d27c0f4b8256e7c12ee3e6d, type: 2}
     - target: {fileID: 4351379898236352973, guid: 7d9f1028ab0c6a64ebe833643141c3bf, type: 3}
       propertyPath: m_Layer
       value: 3
@@ -495,7 +523,7 @@ ParticleSystemRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10308, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: e823cd5b5d27c0f4b8256e7c12ee3e6d, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -5453,6 +5481,11 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 7398125847767468326, guid: 7d9f1028ab0c6a64ebe833643141c3bf, type: 3}
   m_PrefabInstance: {fileID: 277869359}
   m_PrefabAsset: {fileID: 0}
+--- !u!20 &1453569328 stripped
+Camera:
+  m_CorrespondingSourceObject: {fileID: 4634456541079447320, guid: 7d9f1028ab0c6a64ebe833643141c3bf, type: 3}
+  m_PrefabInstance: {fileID: 277869359}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1480457404
 GameObject:
   m_ObjectHideFlags: 0
@@ -5570,6 +5603,7 @@ MonoBehaviour:
   audioSource: {fileID: 0}
   flashSound: {fileID: 0}
   gameManager: {fileID: 5343657727408504871, guid: 36ce631854afc0a498659dd56f1f8fab, type: 3}
+  batteryLife: {fileID: 0}
 --- !u!4 &1707131791 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1279662824994058628, guid: 7d9f1028ab0c6a64ebe833643141c3bf, type: 3}

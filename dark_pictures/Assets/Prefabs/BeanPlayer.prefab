@@ -166,25 +166,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 300d1b865c64c5f488e748f64602cd3e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController
+  playerCanMove: 1
+  playerCamera: {fileID: 0}
   gameManager: {fileID: 0}
+  beanModel: {fileID: 1250038876763126900}
+  mouseSensitivity: 30
   moveSpeed: 8
   sprintSpeed: 14
   crouchSpeed: 2.5
   jumpHeight: 1.5
   gravity: -20
-  cam: {fileID: 4634456541079447320}
-  mouseSensitivity: 30
-  cameraCrouchOffset: -1
-  cameraTransitionSpeed: 8
-  crouchHeight: 0.5
-  normalHeight: 5
-  crouchTransitionSpeed: 8
-  beanModel: {fileID: 1250038876763126900}
-  beanCrouchOffset: -0.5
-  beanTransitionSpeed: 10
-  obstacleMask:
-    serializedVersion: 2
-    m_Bits: 0
+  modelYOffset: 1
+  maxStamina: 100
+  staminaDrainRate: 20
+  staminaRegenRate: 15
+  staminaRegenDelay: 1
+  minStaminaForSprint: 30
+  minStaminaForBreathing: 30
+  outOfBreathSound: {fileID: 0}
+  heartbeatSound: {fileID: 0}
+  entity: {fileID: 0}
+  maxHeartbeatDistance: 20
+  minHeartbeatVolume: 0.1
+  maxHeartbeatVolume: 1
 --- !u!114 &1863620129342110328
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -207,6 +211,7 @@ MonoBehaviour:
   audioSource: {fileID: 0}
   flashSound: {fileID: 0}
   gameManager: {fileID: 0}
+  batteryLife: {fileID: 0}
 --- !u!136 &2227021866540385723
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -5384,7 +5389,7 @@ ParticleSystemRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10308, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: e823cd5b5d27c0f4b8256e7c12ee3e6d, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

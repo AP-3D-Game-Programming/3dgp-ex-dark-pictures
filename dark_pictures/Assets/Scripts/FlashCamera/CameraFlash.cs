@@ -53,8 +53,8 @@ public class CameraFlash : MonoBehaviour
 
 	void TriggerFlash()
 	{
-		if (!batteryLife.DecreaseBattery(batteryDecreasingAmount))
-            return;
+		if (batteryLife != null && !batteryLife.DecreaseBattery(batteryDecreasingAmount))
+			return;
 
 		if (!(batteryLife.GetBatteryLife() <= batteryDecreasingAmount))
 			flashIndicator.SetCooldown(flashCooldown);
