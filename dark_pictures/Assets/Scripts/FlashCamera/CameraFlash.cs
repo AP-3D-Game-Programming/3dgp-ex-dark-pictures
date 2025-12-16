@@ -16,12 +16,14 @@ public class CameraFlash : MonoBehaviour
 	[Header("Audio")]
 	public AudioSource audioSource;
 	public AudioClip flashSound;
-
 	private float nextFlashTime = 0f;
-
 	[SerializeField] GameManager gameManager;
 	
 	[SerializeField] BatteryLife batteryLife;
+
+	[SerializeField] FlashIndicator flashIndicator;
+	[SerializeField] GameObject gameObject;
+	float batteryDecreasingAmount = 10;
 
 	void Start()
 	{
@@ -51,9 +53,12 @@ public class CameraFlash : MonoBehaviour
 
 	void TriggerFlash()
 	{
-		if (!batteryLife.DecreaseBattery(10) )
+		if (!batteryLife.DecreaseBattery(batteryDecreasingAmount))
             return;
 
+		if (!(batteryLife.GetBatteryLife() <= batteryDecreasingAmount))
+			flashIndicator.SetCooldown(flashCooldown);
+		
 		flashLight.intensity = flashIntensity;
 		if (audioSource != null && flashSound != null) audioSource.PlayOneShot(flashSound);
 

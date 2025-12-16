@@ -1,34 +1,25 @@
 using System.Diagnostics;
 using NUnit.Framework;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEditor.ShaderGraph;
 using UnityEngine;
-enum BatteryColor
-{
-    GREEN,
-    RED
-}
-public class BatteryLife : MonoBehaviour
-{
+public class BatteryLife : MonoBehaviour {
     private bool isEmpty = true;
     private Renderer rend;
-    private BatteryColor color;
+    private ObjectColor color;
+
+    [SerializeField] FlashIndicator flashIndicator;
     void Start()
     {
         rend =  GetComponent<Renderer>();
     }
-    private void SetBatteryColor(BatteryColor color)
+    private void SetBatteryColor(ObjectColor color)
     {
-        Color rgbColor = (int) color switch
-        {
-            0 => new Color(0,1f,0f),
-            1 => new Color(1f, 0,0),
-            _ => new Color(0,1f,0f)
-        };
-        rend.material.color = rgbColor;
+        Operations.SetObjectColor(color, rend);
         this.color = color;
     }
-    public float getBatteryLife()
+    public float GetBatteryLife()
     {
         return transform.localScale.z*100;
     }
@@ -75,12 +66,14 @@ public class BatteryLife : MonoBehaviour
     {
         if (newLife <= 0)
         {
-            SetBatteryColor(BatteryColor.RED);
+            SetBatteryColor(ObjectColor.RED);
             isEmpty = true;
+            flashIndicator.SetColor(ObjectColor.RED);
         } else if (newLife > 0 && isEmpty == true)
         {
-            SetBatteryColor(BatteryColor.GREEN);
+            SetBatteryColor(ObjectColor.GREEN);
             isEmpty = false;
+            flashIndicator.SetColor(ObjectColor.GREEN);
         }
     }
 }
