@@ -42,9 +42,9 @@ public class Door : MonoBehaviour
     // Call this function to toggle door open/close
     public void ToggleDoor()
     {
-       if (inventory.items.Find(item => item == key) == null)
+
+        if (inventory.items.Find(item => item == key) == null)
             return; 
         isOpen = !isOpen; // Switch between true/false
     }
-    
 }
