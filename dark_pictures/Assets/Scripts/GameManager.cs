@@ -51,8 +51,6 @@ public class GameManager : MonoBehaviour
 		Cursor.lockState = CursorLockMode.None;
 		Cursor.visible = true;
 	}
-	public void SetGameObjectOnActive(GameObject gameObject)
-    {
-		gameObject.SetActive(false);
-    }
+	public void SetGameObjectUnActive(GameObject gameObject) =>	gameObject.SetActive(false);
+	public void SetGameObjectActive(GameObject gameObject) =>	gameObject.SetActive(true);
 }

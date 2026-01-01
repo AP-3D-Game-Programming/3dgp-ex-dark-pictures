@@ -14,6 +14,7 @@ public static class Utils
             _ => new Color(0, 1f, 0f)
         };
         rend.material.color = rgbColor;
+        rend.material.SetColor("_EmissionColor", rgbColor);
         return color;
     }
     public static void Print<TKey, TValue>(Dictionary<TKey, TValue> dict)

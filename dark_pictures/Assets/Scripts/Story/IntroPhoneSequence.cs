@@ -53,9 +53,11 @@ public class IntroPhoneSequence : MonoBehaviour
 		{
 			if (Input.GetKeyDown(KeyCode.Tab))
 			{
-				// StartTheShow();
-				PutPhoneAway();
-				if (flashlight != null) flashlight.enabled = true;
+				StartTheShow();
+			
+				// Comment the above and uncomment below to skip intro
+				// PutPhoneAway();
+				// if (flashlight != null) flashlight.enabled = true;
 			}
 		}
 	}
