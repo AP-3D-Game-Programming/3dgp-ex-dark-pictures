@@ -47,5 +47,4 @@ public class Door : MonoBehaviour
 
         isOpen = !isOpen; // Switch between true/false
     }
-    
 }
