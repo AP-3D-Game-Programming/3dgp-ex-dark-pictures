@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class FlashIndicator : MonoBehaviour
 {
-    float cooldownTime = 0; 
+    float cooldownTime = 0;
     ObjectColor color;
     Renderer rend;
     void Start()
@@ -13,8 +13,9 @@ public class FlashIndicator : MonoBehaviour
         color = ObjectColor.GREEN;
         rend = gameObject.GetComponent<Renderer>();
     }
-    
-    public void SetCooldown(float seconds) {
+
+    public void SetCooldown(float seconds)
+    {
         cooldownTime = seconds;
         StartCoroutine(WaitTillCooldownUp());
         SetColor(ObjectColor.RED);
@@ -30,6 +31,6 @@ public class FlashIndicator : MonoBehaviour
 
     public void SetColor(ObjectColor color)
     {
-        this.color = Operations.SetObjectColor(color, rend);
+        this.color = Utils.SetObjectColor(color, rend);
     }
 }

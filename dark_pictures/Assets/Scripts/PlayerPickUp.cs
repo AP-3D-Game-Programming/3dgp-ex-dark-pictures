@@ -1,3 +1,8 @@
+using System.Collections.Generic;
+using System.Linq;
+using Unity.VisualScripting;
+using Unity.VisualScripting.ReorderableList.Element_Adder_Menu;
+using UnityEditor;
 using UnityEngine;
 
 public class PlayerPickUp : MonoBehaviour
@@ -6,6 +11,11 @@ public class PlayerPickUp : MonoBehaviour
     float playerPickUpDistance = 3f;
     [SerializeField] Transform playerCameraTrans;
     [SerializeField] LayerMask layerMask;
+    List<string> inventoryTags = new List<string>()
+    {
+        "Key",
+        "Battery",
+    };
     // Update is called once per frame
     void Update()
     {
@@ -19,11 +29,11 @@ public class PlayerPickUp : MonoBehaviour
                 {
                     obj.GetComponent<Door>().ToggleDoor();
                 }
-                else if (obj.CompareTag("Key"))  
+                else if (inventoryTags.Any(i => obj.tag == $"{i}Parent" || obj.tag == i))
                 {
                     inventory.AddObject(obj.transform);
                 }
-            } 
+            }
         }
     }
 }
