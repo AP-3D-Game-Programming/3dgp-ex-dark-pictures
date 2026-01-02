@@ -27,7 +27,6 @@ public class SingleDoorController : MonoBehaviour
 		{
 			player = playerObj.transform;
 			
-            // FIX: Use GetComponentInChildren because the Inventory script is on a child GameObject, not the root Player
 			playerInventory = playerObj.GetComponentInChildren<Inventory>();
 
             if (playerInventory == null)
@@ -70,6 +69,13 @@ public class SingleDoorController : MonoBehaviour
 			if (playerInventory.Contains(keyTagName))
 			{
 				Debug.Log($"Key '{keyTagName}' found! Opening door.");
+				
+				// 1. Remove the key from inventory
+				playerInventory.UseItem(keyTagName);
+				
+				// 2. Unlock the door permanently so we don't need a second key if we close it
+				requiresKey = false; 
+				
 				ToggleDoor();
 			}
 			else
