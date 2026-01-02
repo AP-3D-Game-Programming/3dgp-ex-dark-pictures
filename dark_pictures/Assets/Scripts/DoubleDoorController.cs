@@ -1,6 +1,3 @@
-// 12/12/2025 AI-Tag
-// This was created with the help of Assistant, a Unity Artificial Intelligence product.
-
 using System;
 using UnityEditor;
 using UnityEngine;
@@ -13,17 +10,32 @@ public class MainDoorController : MonoBehaviour
     public MeshCollider rightDoorCollider; // Collider for the right door
     public float openAngle = 90f; // The angle to rotate the doors to open them
     public float rotationSpeed = 2f; // Speed of rotation
+    public float interactionDistance = 3f; // Maximum distance to interact with the door
+    private Transform player; // Reference to the player
     private bool isOpen = false; // Tracks if the doors are open or closed
+
+    void Start()
+    {
+        // Find the player by tag - make sure your player has the "Player" tag
+        player = GameObject.FindGameObjectWithTag("Player").transform;
+    }
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.E))
+        if (Input.GetKeyDown(KeyCode.E) && IsPlayerInRange())
         {
             isOpen = !isOpen; // Toggle the door state
             UpdateColliders(); // Update the colliders based on the door state
         }
 
         RotateDoors();
+    }
+
+    bool IsPlayerInRange()
+    {
+        // Check distance from player to this door's position
+        float distance = Vector3.Distance(player.position, transform.position);
+        return distance <= interactionDistance;
     }
 
     void RotateDoors()
