@@ -45,6 +45,9 @@ public class CameraFlash : MonoBehaviour
 
 		if (Input.GetMouseButtonDown(0))
 		{
+			// Prevent flashing if the cursor is unlocked (e.g. interacting with Keypad)
+			if (Cursor.lockState != CursorLockMode.Locked) return;
+
 			if (flashLight == null) return;
 			if (Time.time >= nextFlashTime)
 			{

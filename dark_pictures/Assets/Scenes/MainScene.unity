@@ -4147,7 +4147,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -4596,7 +4596,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -12941,6 +12941,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1716649326}
     - target: {fileID: 3728168619084174366, guid: 9644db27f48d5dc4fbbe94e4b20060ed, type: 3}
+      propertyPath: doorController
+      value: 
+      objectReference: {fileID: 1716649327}
+    - target: {fileID: 3728168619084174366, guid: 9644db27f48d5dc4fbbe94e4b20060ed, type: 3}
       propertyPath: playerController
       value: 
       objectReference: {fileID: 1289835396}
@@ -14191,6 +14195,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 46132551265026148, guid: 2ceb455c17490284aac8af5a3dfa3169, type: 3}
+      propertyPath: rotationSpeed
+      value: 50
+      objectReference: {fileID: 0}
     - target: {fileID: 59717035822110074, guid: 2ceb455c17490284aac8af5a3dfa3169, type: 3}
       propertyPath: m_Layer
       value: 6
@@ -14211,6 +14219,10 @@ PrefabInstance:
       propertyPath: lockedSound
       value: 
       objectReference: {fileID: 8300000, guid: d21aa3648b457eb4695b8abb63fb462e, type: 3}
+    - target: {fileID: 512482762166883500, guid: 2ceb455c17490284aac8af5a3dfa3169, type: 3}
+      propertyPath: rotationSpeed
+      value: 50
+      objectReference: {fileID: 0}
     - target: {fileID: 611480308088202050, guid: 2ceb455c17490284aac8af5a3dfa3169, type: 3}
       propertyPath: m_Layer
       value: 6
@@ -14250,6 +14262,10 @@ PrefabInstance:
     - target: {fileID: 1857678174134293946, guid: 2ceb455c17490284aac8af5a3dfa3169, type: 3}
       propertyPath: requiresKey
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1857678174134293946, guid: 2ceb455c17490284aac8af5a3dfa3169, type: 3}
+      propertyPath: rotationSpeed
+      value: 50
       objectReference: {fileID: 0}
     - target: {fileID: 2031521239908874116, guid: 2ceb455c17490284aac8af5a3dfa3169, type: 3}
       propertyPath: m_Convex
@@ -14303,6 +14319,14 @@ PrefabInstance:
       propertyPath: m_Convex
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3190595129270780486, guid: 2ceb455c17490284aac8af5a3dfa3169, type: 3}
+      propertyPath: rotationSpeed
+      value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 3409449796021167538, guid: 2ceb455c17490284aac8af5a3dfa3169, type: 3}
+      propertyPath: rotationSpeed
+      value: 50
+      objectReference: {fileID: 0}
     - target: {fileID: 3803361984704662514, guid: 2ceb455c17490284aac8af5a3dfa3169, type: 3}
       propertyPath: m_Range
       value: 15
@@ -14323,6 +14347,10 @@ PrefabInstance:
       propertyPath: lockedSound
       value: 
       objectReference: {fileID: 8300000, guid: d21aa3648b457eb4695b8abb63fb462e, type: 3}
+    - target: {fileID: 4153620915116267754, guid: 2ceb455c17490284aac8af5a3dfa3169, type: 3}
+      propertyPath: rotationSpeed
+      value: 50
+      objectReference: {fileID: 0}
     - target: {fileID: 4168474610771230252, guid: 2ceb455c17490284aac8af5a3dfa3169, type: 3}
       propertyPath: m_Layer
       value: 6
@@ -14338,6 +14366,10 @@ PrefabInstance:
     - target: {fileID: 4237584100822129114, guid: 2ceb455c17490284aac8af5a3dfa3169, type: 3}
       propertyPath: m_Layer
       value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 4300274938610762778, guid: 2ceb455c17490284aac8af5a3dfa3169, type: 3}
+      propertyPath: rotationSpeed
+      value: 50
       objectReference: {fileID: 0}
     - target: {fileID: 4448283185055454946, guid: 2ceb455c17490284aac8af5a3dfa3169, type: 3}
       propertyPath: m_Convex
@@ -14407,6 +14439,10 @@ PrefabInstance:
       propertyPath: lockedSound
       value: 
       objectReference: {fileID: 8300000, guid: d21aa3648b457eb4695b8abb63fb462e, type: 3}
+    - target: {fileID: 6075097610944168091, guid: 2ceb455c17490284aac8af5a3dfa3169, type: 3}
+      propertyPath: rotationSpeed
+      value: 50
+      objectReference: {fileID: 0}
     - target: {fileID: 6510575260204033260, guid: 2ceb455c17490284aac8af5a3dfa3169, type: 3}
       propertyPath: m_Enabled
       value: 1
@@ -14484,6 +14520,14 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8419436841297781940, guid: 2ceb455c17490284aac8af5a3dfa3169, type: 3}
+      propertyPath: lockedSound
+      value: 
+      objectReference: {fileID: 8300000, guid: d21aa3648b457eb4695b8abb63fb462e, type: 3}
+    - target: {fileID: 8419436841297781940, guid: 2ceb455c17490284aac8af5a3dfa3169, type: 3}
+      propertyPath: rotationSpeed
+      value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 8419436841297781940, guid: 2ceb455c17490284aac8af5a3dfa3169, type: 3}
       propertyPath: isKeypadControlled
       value: 1
       objectReference: {fileID: 0}
@@ -14494,6 +14538,10 @@ PrefabInstance:
     - target: {fileID: 8519820686141863143, guid: 2ceb455c17490284aac8af5a3dfa3169, type: 3}
       propertyPath: requiresKey
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8519820686141863143, guid: 2ceb455c17490284aac8af5a3dfa3169, type: 3}
+      propertyPath: rotationSpeed
+      value: 50
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 0}
@@ -20215,7 +20263,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -21687,7 +21735,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -22783,6 +22831,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 5597832399711703976, guid: 2ceb455c17490284aac8af5a3dfa3169, type: 3}
   m_PrefabInstance: {fileID: 1014985676}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1716649327 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8419436841297781940, guid: 2ceb455c17490284aac8af5a3dfa3169, type: 3}
+  m_PrefabInstance: {fileID: 1014985676}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0ed83301c2803fe499bf5fdd9e1c60a0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SingleDoorController
 --- !u!1001 &1721469595
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -22896,6 +22955,14 @@ PrefabInstance:
     - target: {fileID: 7712410157102490281, guid: b55e9a82aaea41744951234438d07c26, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8568380784593506165, guid: b55e9a82aaea41744951234438d07c26, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0.619
+      objectReference: {fileID: 0}
+    - target: {fileID: 8568380784593506165, guid: b55e9a82aaea41744951234438d07c26, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -0.377
       objectReference: {fileID: 0}
     - target: {fileID: 9172563654700490936, guid: b55e9a82aaea41744951234438d07c26, type: 3}
       propertyPath: player
@@ -27337,7 +27404,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -27680,6 +27747,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 817896362}
     m_Modifications:
+    - target: {fileID: 834582853154033995, guid: 54e984b84a44e8b4f84952f7372329ad, type: 3}
+      propertyPath: m_RaycastTarget
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1886168661797190565, guid: 54e984b84a44e8b4f84952f7372329ad, type: 3}
       propertyPath: m_Name
       value: StartScreen
@@ -27687,6 +27758,14 @@ PrefabInstance:
     - target: {fileID: 1886168661797190565, guid: 54e984b84a44e8b4f84952f7372329ad, type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4491325618248141199, guid: 54e984b84a44e8b4f84952f7372329ad, type: 3}
+      propertyPath: m_RaycastTarget
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4876673092723679347, guid: 54e984b84a44e8b4f84952f7372329ad, type: 3}
+      propertyPath: m_RaycastTarget
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6678696498957628777, guid: 54e984b84a44e8b4f84952f7372329ad, type: 3}
       propertyPath: m_Pivot.x
@@ -28171,6 +28250,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 970614686748911683, guid: 7099a54a81c993544b6631b958659407, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2223898418952850556, guid: 7099a54a81c993544b6631b958659407, type: 3}
+      propertyPath: m_RaycastTarget
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5659902353257163309, guid: 7099a54a81c993544b6631b958659407, type: 3}

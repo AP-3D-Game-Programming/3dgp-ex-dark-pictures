@@ -7,7 +7,7 @@ public class SingleDoorController : MonoBehaviour
 	public Transform door;
 	public MeshCollider doorCollider;
 	public float openAngle = 90f;
-	public float rotationSpeed = 2f;
+	public float rotationSpeed = 90f; // Degrees per second
 	public float interactionDistance = 3f;
 
 	[Header("Key Settings")]
@@ -153,7 +153,8 @@ public class SingleDoorController : MonoBehaviour
 	{
 		float targetAngle = isOpen ? openAngle : 0f;
 		Quaternion targetRotation = Quaternion.Euler(0, targetAngle, 0);
-		door.localRotation = Quaternion.Lerp(door.localRotation, targetRotation, Time.deltaTime * rotationSpeed);
+		// Use RotateTowards to actually reach the target angle
+		door.localRotation = Quaternion.RotateTowards(door.localRotation, targetRotation, Time.deltaTime * rotationSpeed);
 	}
 
 	void UpdateCollider()

@@ -10,9 +10,7 @@ public class Keypad : MonoBehaviour
     public GameObject keypadUI; // UI panel
 
     [Header("Door Settings")]
-    public Transform doorTransform; // DEUR GameObject
-    public float openAngle = -90f;
-    public float openSpeed = 2f;
+    public SingleDoorController doorController;
 
     [Header("Keypad Settings")]
     public string correctCode = "1234";
@@ -33,14 +31,8 @@ public class Keypad : MonoBehaviour
 
     private string enteredCode = "";
     private bool isUnlocked = false;
-    private bool isOpen = false;
     private bool isFocused = false;
     private AudioSource audioSource;
-
-    // Door rotation
-    private Quaternion closedRotation;
-    private Quaternion openRotation;
-    private Transform doorParent;
 
     void Start()
     {
@@ -65,21 +57,10 @@ public class Keypad : MonoBehaviour
         audioSource.spatialBlend = 1f;
         audioSource.volume = audioVolume;
 
-        // Setup door rotation
-        if (doorTransform != null)
+        // Validate door controller reference
+        if (doorController == null)
         {
-            // Check of er een parent is, zo niet gebruik het object zelf
-            if (doorTransform.parent != null)
-            {
-                doorParent = doorTransform.parent;
-            }
-            else
-            {
-                doorParent = doorTransform; // Geen parent - roteer object zelf
-            }
-
-            closedRotation = doorParent.rotation;
-            openRotation = Quaternion.Euler(doorParent.eulerAngles + new Vector3(0, openAngle, 0));
+            Debug.LogWarning("Keypad: No SingleDoorController assigned! Door will not open.");
         }
 
         UpdateDisplay();
@@ -87,19 +68,6 @@ public class Keypad : MonoBehaviour
 
     void Update()
     {
-        // Handle door rotation
-        if (doorParent != null)
-        {
-            if (isOpen)
-            {
-                doorParent.rotation = Quaternion.Lerp(doorParent.rotation, openRotation, Time.deltaTime * openSpeed);
-            }
-            else
-            {
-                doorParent.rotation = Quaternion.Lerp(doorParent.rotation, closedRotation, Time.deltaTime * openSpeed);
-            }
-        }
-
         // Handle keypad focus
         if (player == null || isUnlocked) return;
 
@@ -185,7 +153,6 @@ public class Keypad : MonoBehaviour
         {
             // CORRECT!
             isUnlocked = true;
-            isOpen = true;
 
             if (statusText != null)
             {
@@ -194,6 +161,17 @@ public class Keypad : MonoBehaviour
             }
 
             PlaySound(correctSound);
+
+            // Open the door using SingleDoorController
+            if (doorController != null)
+            {
+                Debug.Log("Keypad: Opening door via SingleDoorController");
+                doorController.SetDoorState(true);
+            }
+            else
+            {
+                Debug.LogError("Keypad: doorController is null! Cannot open door.");
+            }
 
             Invoke("Unfocus", 2f);
         }
@@ -239,10 +217,11 @@ public class Keypad : MonoBehaviour
         Gizmos.color = Color.cyan;
         Gizmos.DrawWireSphere(transform.position, interactionRange);
 
-        if (doorTransform != null)
+        // Draw line to door controller if assigned
+        if (doorController != null)
         {
             Gizmos.color = isUnlocked ? Color.green : Color.yellow;
-            Gizmos.DrawLine(transform.position, doorTransform.position);
+            Gizmos.DrawLine(transform.position, doorController.transform.position);
         }
     }
 }
