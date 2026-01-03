@@ -8,10 +8,10 @@ public class IntroScareTrigger : MonoBehaviour
 	public Camera playerCamera;
 	public GameObject flashPromptUI;
 	public GameObject tutorialEntity;
-    public MainDoorController mainDoor; // Reference to the main door
+    public DoubleDoorController mainDoor; 
 
 	[Header("Target")]
-	public Transform scareTarget; // tutorialEntity
+	public Transform scareTarget; 
 
 	[Header("Settings")]
 	public float turnSpeed = 5f;
@@ -22,7 +22,7 @@ public class IntroScareTrigger : MonoBehaviour
     {
         if (mainDoor == null)
         {
-            mainDoor = FindObjectOfType<MainDoorController>();
+            mainDoor = FindObjectOfType<DoubleDoorController>();
         }
     }
 

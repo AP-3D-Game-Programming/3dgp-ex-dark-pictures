@@ -60,7 +60,6 @@ public class SingleDoorController : MonoBehaviour
 	void Update()
 	{
 		// Check for input and distance
-        // If keypad controlled, ignore E key
 		if (!isKeypadControlled && Input.GetKeyDown(KeyCode.E) && IsPlayerInRange())
 		{
 			TryInteractWithDoor();
@@ -68,6 +67,15 @@ public class SingleDoorController : MonoBehaviour
 
 		RotateDoor();
 	}
+
+    // Called by PlayerPickUp
+    public void Interact()
+    {
+        if (!isKeypadControlled)
+        {
+            TryInteractWithDoor();
+        }
+    }
 
 	void TryInteractWithDoor()
 	{

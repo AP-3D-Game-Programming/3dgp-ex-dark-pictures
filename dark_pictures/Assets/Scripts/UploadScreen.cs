@@ -17,7 +17,7 @@ public class UploadScreen : MonoBehaviour
     public Transform player;
 
     [Header("Door Reference")]
-    public MainDoorController mainDoor; // Reference to the main door to open
+    public DoubleDoorController mainDoor; // Reference to the main door to open
 
     [Header("Audio")]
     public AudioClip doneSound;  // Geluid bij upload complete

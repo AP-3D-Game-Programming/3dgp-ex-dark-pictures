@@ -2,7 +2,7 @@ using System;
 using UnityEditor;
 using UnityEngine;
 
-public class MainDoorController : MonoBehaviour
+public class DoubleDoorController : MonoBehaviour
 {
     public Transform leftDoor; // Reference to the left door (Cube_10)
     public Transform rightDoor; // Reference to the right door (Cube_14)
@@ -35,6 +35,17 @@ public class MainDoorController : MonoBehaviour
         }
 
         RotateDoors();
+    }
+
+    // Called by PlayerPickUp
+    public void Interact()
+    {
+        // If locked, do not allow interaction
+        if (!isLocked)
+        {
+            isOpen = !isOpen; // Toggle the door state
+            UpdateColliders(); // Update the colliders based on the door state
+        }
     }
 
     // Helper to lock/unlock the door from other scripts
