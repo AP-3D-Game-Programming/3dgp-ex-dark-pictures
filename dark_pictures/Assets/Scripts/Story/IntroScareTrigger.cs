@@ -8,6 +8,7 @@ public class IntroScareTrigger : MonoBehaviour
 	public Camera playerCamera;
 	public GameObject flashPromptUI;
 	public GameObject tutorialEntity;
+    public MainDoorController mainDoor; // Reference to the main door
 
 	[Header("Target")]
 	public Transform scareTarget; // tutorialEntity
@@ -16,6 +17,14 @@ public class IntroScareTrigger : MonoBehaviour
 	public float turnSpeed = 5f;
 
 	private bool hasTriggered = false;
+
+    void Start()
+    {
+        if (mainDoor == null)
+        {
+            mainDoor = FindObjectOfType<MainDoorController>();
+        }
+    }
 
 	private void OnTriggerEnter(Collider other)
 	{
@@ -26,6 +35,16 @@ public class IntroScareTrigger : MonoBehaviour
 			hasTriggered = true;
 			Debug.Log("JUMPSCARE START!");
 
+            // Lock the main door when the scare starts
+            if (mainDoor != null)
+            {
+                mainDoor.SetLocked(true);
+            }
+            else
+            {
+                Debug.LogWarning("IntroScareTrigger: MainDoorController reference is missing!");
+            }
+
 			// 1. Speler input uit
 			if (playerScript != null) playerScript.enabled = false;
 
@@ -35,6 +54,12 @@ public class IntroScareTrigger : MonoBehaviour
 			// 3. Toon tekst
 			if (flashPromptUI != null) flashPromptUI.SetActive(true);
 
+            // Update phone objective
+            if (TutorialNarrativeManager.Instance != null)
+            {
+                TutorialNarrativeManager.Instance.AdvanceStory(7);
+            }
+
 			// 4. Forceer de draai
 			if (playerScript != null && scareTarget != null)
 			{
@@ -42,8 +67,8 @@ public class IntroScareTrigger : MonoBehaviour
 			}
 		}
 	}
-
-	IEnumerator SmoothLookAt()
+    // ... existing SmoothLookAt code ...
+    IEnumerator SmoothLookAt()
 	{
 		yield return null; // Wacht 1 frame
 

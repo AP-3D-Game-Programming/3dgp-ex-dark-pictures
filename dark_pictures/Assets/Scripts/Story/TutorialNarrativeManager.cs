@@ -57,6 +57,12 @@ public class TutorialNarrativeManager : MonoBehaviour
 				doorObject.isOpen = false; 
 				instructionText.text = "Find another way out.";
 				break;
+			case 6: // Entity flashed
+				instructionText.text = "Find the code for the keypad";
+				break;
+			case 7: // After scare
+                instructionText.text = "Take a picture of the monster";
+                break;
 			case 99: // Gebruik dit om tekst weg te halen
 				instructionText.text = "";
 				break;

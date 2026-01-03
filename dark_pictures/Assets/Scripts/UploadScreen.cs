@@ -16,6 +16,9 @@ public class UploadScreen : MonoBehaviour
     [Header("Player Reference")]
     public Transform player;
 
+    [Header("Door Reference")]
+    public MainDoorController mainDoor; // Reference to the main door to open
+
     [Header("Audio")]
     public AudioClip doneSound;  // Geluid bij upload complete
     public float doneVolume = 0.8f;
@@ -136,6 +139,12 @@ public class UploadScreen : MonoBehaviour
                 if (doneSound != null && audioSource != null)
                 {
                     audioSource.PlayOneShot(doneSound, doneVolume);
+                }
+
+                // Open the main door
+                if (mainDoor != null)
+                {
+                    mainDoor.ForceOpen();
                 }
                 break;
         }

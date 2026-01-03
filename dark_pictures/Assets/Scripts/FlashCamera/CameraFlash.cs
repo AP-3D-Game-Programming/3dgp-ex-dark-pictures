@@ -153,6 +153,15 @@ public class CameraFlash : MonoBehaviour
 					{
 						Debug.Log("Stunned Real Entity (Via " + lineHit.transform.name + ")");
 						realEnemy.StunEntity(stunDuration);
+
+						// *** ADDED THIS LINE ***
+						// Notify the manager that we stunned the entity
+						if (ObjectivesManager.Instance != null)
+						{
+							ObjectivesManager.Instance.CompleteFlashObjective();
+						}
+						// ***********************
+
 						continue;
 					}
 

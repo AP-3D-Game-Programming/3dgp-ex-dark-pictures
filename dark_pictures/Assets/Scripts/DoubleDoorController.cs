@@ -11,6 +11,11 @@ public class MainDoorController : MonoBehaviour
     public float openAngle = 90f; // The angle to rotate the doors to open them
     public float rotationSpeed = 2f; // Speed of rotation
     public float interactionDistance = 3f; // Maximum distance to interact with the door
+    
+    [Header("Main Door Settings")]
+    public bool isMainDoor = false; // Toggle if this is the main entrance
+    public bool isLocked = false;   // If true, door cannot be opened by player
+
     private Transform player; // Reference to the player
     private bool isOpen = false; // Tracks if the doors are open or closed
 
@@ -22,7 +27,8 @@ public class MainDoorController : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.E) && IsPlayerInRange())
+        // If locked, do not allow interaction
+        if (!isLocked && Input.GetKeyDown(KeyCode.E) && IsPlayerInRange())
         {
             isOpen = !isOpen; // Toggle the door state
             UpdateColliders(); // Update the colliders based on the door state
@@ -31,8 +37,32 @@ public class MainDoorController : MonoBehaviour
         RotateDoors();
     }
 
+    // Helper to lock/unlock the door from other scripts
+    public void SetLocked(bool locked)
+    {
+        isLocked = locked;
+        // If we lock the door, force it closed immediately
+        if (isLocked)
+        {
+            if (isOpen)
+            {
+                isOpen = false;
+                UpdateColliders();
+            }
+        }
+    }
+
+    // Helper to force open the door (e.g. after upload)
+    public void ForceOpen()
+    {
+        isLocked = false; // Unlock it
+        isOpen = true;    // Open it
+        UpdateColliders();
+    }
+
     bool IsPlayerInRange()
     {
+        if (player == null) return false;
         // Check distance from player to this door's position
         float distance = Vector3.Distance(player.position, transform.position);
         return distance <= interactionDistance;

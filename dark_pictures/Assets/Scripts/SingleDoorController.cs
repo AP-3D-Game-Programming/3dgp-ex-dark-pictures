@@ -11,11 +11,19 @@ public class SingleDoorController : MonoBehaviour
 	public float interactionDistance = 3f;
 
 	[Header("Key Settings")]
-	public bool requiresKey = false; // Check this box in Inspector if door is locked
-	public string keyTagName = "Key"; // The tag name of the key required (match this with your Inventory tags)
+	public bool requiresKey = false; 
+	public string keyTagName = "Key"; 
+
+    [Header("Access Settings")]
+    public bool isKeypadControlled = false;
+
+    [Header("Audio")]
+    public AudioClip lockedSound;
+    public float lockedVolume = 1f;
+    private AudioSource audioSource;
 
 	private Transform player;
-	private Inventory playerInventory; // Reference to the inventory script
+	private Inventory playerInventory;
 	private bool isOpen = false;
 
 	void Start()
@@ -38,12 +46,22 @@ public class SingleDoorController : MonoBehaviour
 		{
 			Debug.LogError("Player not found! Make sure your Player object has the tag 'Player'.");
 		}
+
+        // Setup AudioSource
+        audioSource = GetComponent<AudioSource>();
+        if (audioSource == null)
+        {
+            audioSource = gameObject.AddComponent<AudioSource>();
+        }
+        audioSource.playOnAwake = false;
+        audioSource.spatialBlend = 1f; // Make it 3D sound
 	}
 
 	void Update()
 	{
 		// Check for input and distance
-		if (Input.GetKeyDown(KeyCode.E) && IsPlayerInRange())
+        // If keypad controlled, ignore E key
+		if (!isKeypadControlled && Input.GetKeyDown(KeyCode.E) && IsPlayerInRange())
 		{
 			TryInteractWithDoor();
 		}
@@ -62,10 +80,9 @@ public class SingleDoorController : MonoBehaviour
 		}
 
 		// If we represent here, the door is Closed AND Requires a Key.
-		// We need to check the inventory.
+		// check the inventory.
 		if (playerInventory != null)
 		{
-			// Use the .Contains method you already wrote in your Inventory script
 			if (playerInventory.Contains(keyTagName))
 			{
 				Debug.Log($"Key '{keyTagName}' found! Opening door.");
@@ -82,7 +99,12 @@ public class SingleDoorController : MonoBehaviour
 			{
 				Debug.Log($"Door is locked. You need a '{keyTagName}'.");
                 
-                // DEBUGGING: Print what keys we actually have to the console
+                // Play locked sound
+                if (lockedSound != null && audioSource != null)
+                {
+                    audioSource.PlayOneShot(lockedSound, lockedVolume);
+                }
+                
                 if (playerInventory.items.Count > 0)
                 {
                     string keys = string.Join(", ", playerInventory.items.Keys);
@@ -100,11 +122,17 @@ public class SingleDoorController : MonoBehaviour
         }
 	}
 
-	void ToggleDoor()
+	public void ToggleDoor()
 	{
 		isOpen = !isOpen;
 		UpdateCollider();
 	}
+
+    public void SetDoorState(bool open)
+    {
+        isOpen = open;
+        UpdateCollider();
+    }
 
 	bool IsPlayerInRange()
 	{
@@ -124,5 +152,13 @@ public class SingleDoorController : MonoBehaviour
 	{
         if (doorCollider != null)
 		    doorCollider.isTrigger = isOpen;
+	}
+
+	void PlayLockedSound()
+	{
+		if (audioSource != null && lockedSound != null)
+		{
+			audioSource.PlayOneShot(lockedSound, lockedVolume);
+		}
 	}
 }
