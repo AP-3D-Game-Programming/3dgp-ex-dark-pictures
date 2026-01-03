@@ -19,6 +19,9 @@ public class UploadScreen : MonoBehaviour
     [Header("Door Reference")]
     public DoubleDoorController mainDoor; // Reference to the main door to open
 
+    [Header("Escape Trigger")]
+    public EscapeTrigger escapeTrigger; // Reference to the escape trigger
+
     [Header("Audio")]
     public AudioClip doneSound;  // Geluid bij upload complete
     public float doneVolume = 0.8f;
@@ -87,7 +90,11 @@ public class UploadScreen : MonoBehaviour
                 // Check voor E toets
                 else if (Keyboard.current != null && Keyboard.current.eKey.wasPressedThisFrame)
                 {
-                    StartUpload();
+                    // Check if we have the picture before allowing upload
+                    if (ObjectivesManager.Instance != null && ObjectivesManager.Instance.hasFlashedEntity)
+                    {
+                        StartUpload();
+                    }
                 }
                 break;
 
@@ -123,7 +130,15 @@ public class UploadScreen : MonoBehaviour
                 break;
 
             case UploadState.ReadyToUpload:
-                statusText.text = "Press E to upload files";
+                // Check if the player has taken the picture
+                if (ObjectivesManager.Instance != null && ObjectivesManager.Instance.hasFlashedEntity)
+                {
+                    statusText.text = "Press E to upload files";
+                }
+                else
+                {
+                    statusText.text = "You need a picture of the monster first!";
+                }
                 progressBarFill.fillAmount = 0f;
                 break;
 
@@ -145,6 +160,12 @@ public class UploadScreen : MonoBehaviour
                 if (mainDoor != null)
                 {
                     mainDoor.ForceOpen();
+                }
+
+                // Enable Escape Trigger
+                if (escapeTrigger != null)
+                {
+                    escapeTrigger.EnableEscape();
                 }
                 break;
         }
