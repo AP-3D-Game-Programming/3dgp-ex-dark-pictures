@@ -1,3 +1,5 @@
+using NUnit.Framework;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class CameraFlash : MonoBehaviour
@@ -16,12 +18,21 @@ public class CameraFlash : MonoBehaviour
 	[Header("Audio")]
 	public AudioSource audioSource;
 	public AudioClip flashSound;
-
 	private float nextFlashTime = 0f;
-
 	[SerializeField] GameManager gameManager;
-	
+
 	[SerializeField] BatteryLife batteryLife;
+
+	[SerializeField] FlashIndicator flashIndicator;
+	[SerializeField] float batteryDecreasingAmount = 25f;
+	[SerializeField] AudioClip smallFlashSound;
+
+	[SerializeField] private float smallFlashlightIntensity = 0.5f;
+	[SerializeField] private float smallFlashlightPowerConsumption = 2f;
+
+	private bool isSmallFlashlightOn = false;
+
+	private float lightIntensityToStop = 0f;
 
 	void Start()
 	{
@@ -34,6 +45,9 @@ public class CameraFlash : MonoBehaviour
 
 		if (Input.GetMouseButtonDown(0))
 		{
+			// Prevent flashing if the cursor is unlocked (e.g. interacting with Keypad)
+			if (Cursor.lockState != CursorLockMode.Locked) return;
+
 			if (flashLight == null) return;
 			if (Time.time >= nextFlashTime)
 			{
@@ -42,24 +56,70 @@ public class CameraFlash : MonoBehaviour
 			}
 		}
 
-		if (flashLight.intensity > 0)
+		if (flashLight.intensity > lightIntensityToStop)
 		{
 			flashLight.intensity -= fadeSpeed * Time.deltaTime;
-			if (flashLight.intensity < 0) flashLight.intensity = 0;
+			if (flashLight.intensity < lightIntensityToStop) flashLight.intensity = lightIntensityToStop;
 		}
+
+		if (Input.GetKeyDown(KeyCode.F) && batteryLife.GetBatteryLife() > -.5f)
+		{
+			if (isSmallFlashlightOn)
+				TriggerSmallFlash(false);
+			else TriggerSmallFlash(true);
+		}
+		else if (isSmallFlashlightOn && batteryLife.GetBatteryLife() <= -.5f)
+		{
+			TriggerSmallFlash(false);
+			flashIndicator.SetColor(ObjectColor.RED);
+		}
+
 	}
 
-	void TriggerFlash()
+	private void TriggerSmallFlash(bool On)
 	{
-		if (batteryLife != null && !batteryLife.DecreaseBattery(10))
-			return;
+		if (On)
+		{
+			isSmallFlashlightOn = true;
 
-		flashLight.intensity = flashIntensity;
-		if (audioSource != null && flashSound != null) audioSource.PlayOneShot(flashSound);
+			lightIntensityToStop = smallFlashlightIntensity;
+			TriggerFlash(smallFlashlightIntensity, smallFlashSound);
+
+			batteryLife.isDecreasingOverTime = true;
+			StartCoroutine(batteryLife.DecreaseBatteryOverTime(1f, smallFlashlightPowerConsumption));
+		}
+		else
+		{
+			isSmallFlashlightOn = false;
+
+			lightIntensityToStop = 0;
+			audioSource.PlayOneShot(smallFlashSound);
+
+			batteryLife.isDecreasingOverTime = false;
+		}
+
+	}
+
+
+
+	void TriggerFlash(float flashPower, AudioClip clip, bool isBigFlash = false)
+	{
+		if (isBigFlash && batteryLife != null && flashIndicator != null)
+		{
+			if (!(batteryLife.GetBatteryLife() <= batteryDecreasingAmount))
+			{
+				batteryLife.DecreaseBattery(batteryDecreasingAmount);
+				flashIndicator.SetCooldown(flashCooldown);
+			}
+			else return;
+		}
+
+		flashLight.intensity = flashPower;
+		if (audioSource != null && flashSound != null) audioSource.PlayOneShot(clip);
 
 		DetectEnemies();
 	}
-
+	void TriggerFlash() => TriggerFlash(flashIntensity, flashSound, true);
 	void DetectEnemies()
 	{
 		Collider[] hits = Physics.OverlapSphere(transform.position, flashRange);
@@ -96,6 +156,15 @@ public class CameraFlash : MonoBehaviour
 					{
 						Debug.Log("Stunned Real Entity (Via " + lineHit.transform.name + ")");
 						realEnemy.StunEntity(stunDuration);
+
+						// *** ADDED THIS LINE ***
+						// Notify the manager that we stunned the entity
+						if (ObjectivesManager.Instance != null)
+						{
+							ObjectivesManager.Instance.CompleteFlashObjective();
+						}
+						// ***********************
+
 						continue;
 					}
 

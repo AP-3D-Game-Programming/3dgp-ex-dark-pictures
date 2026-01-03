@@ -15,6 +15,8 @@
   <xs:import schemaLocation="Unity.AI.Generators.UI.xsd" namespace="Unity.AI.Generators.UI" />
   <xs:import schemaLocation="Unity.AI.Assistant.Editor.SessionBanner.xsd" namespace="Unity.AI.Assistant.Editor.SessionBanner" />
   <xs:import schemaLocation="Unity.AI.Animate.Components.xsd" namespace="Unity.AI.Animate.Components" />
+  <xs:import schemaLocation="UnityEditor.U2D.Sprites.SpriteEditorTool.xsd" namespace="UnityEditor.U2D.Sprites.SpriteEditorTool" />
+  <xs:import schemaLocation="Unity.U2D.AI.Editor.xsd" namespace="Unity.U2D.AI.Editor" />
   <xs:import schemaLocation="UnityEditor.UIElements.Debugger.xsd" namespace="UnityEditor.UIElements.Debugger" />
   <xs:import schemaLocation="Unity.UI.Builder.xsd" namespace="Unity.UI.Builder" />
   <xs:import schemaLocation="UnityEditor.Search.xsd" namespace="UnityEditor.Search" />

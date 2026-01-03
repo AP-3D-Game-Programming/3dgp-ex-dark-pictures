@@ -7,6 +7,10 @@ TagManager:
   - PlayerCollider
   - Key
   - Door
+  - ItemAmount
+  - ItemImage
+  - KeyParent
+  - Battery
   layers:
   - Default
   - TransparentFX

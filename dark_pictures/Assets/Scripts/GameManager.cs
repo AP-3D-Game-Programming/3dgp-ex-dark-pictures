@@ -11,9 +11,6 @@ public class GameManager : MonoBehaviour
 
 	public bool isGameOver = false;
 	
-	[Header("StartScreen")]
-	[SerializeField] private GameObject startScreen;
-
 	void Start()
 	{
 		if (endScreen != null) endScreen.SetActive(false);
@@ -54,8 +51,6 @@ public class GameManager : MonoBehaviour
 		Cursor.lockState = CursorLockMode.None;
 		Cursor.visible = true;
 	}
-	public void RemoveStartScreen()
-    {
-		startScreen.SetActive(false);
-    }
+	public void SetGameObjectUnActive(GameObject gameObject) =>	gameObject.SetActive(false);
+	public void SetGameObjectActive(GameObject gameObject) =>	gameObject.SetActive(true);
 }

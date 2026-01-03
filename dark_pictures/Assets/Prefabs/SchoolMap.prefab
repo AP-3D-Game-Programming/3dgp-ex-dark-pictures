@@ -11522,6 +11522,7 @@ PrefabInstance:
     m_RemovedComponents:
     - {fileID: 4273613877504239819, guid: 54fc4a62ccb7e304f910c5444e778f6b, type: 3}
     - {fileID: 2076629449603143178, guid: 54fc4a62ccb7e304f910c5444e778f6b, type: 3}
+    - {fileID: 2611527727471231512, guid: 54fc4a62ccb7e304f910c5444e778f6b, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
@@ -19434,6 +19435,22 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 0}
     - target: {fileID: 2076629449603143178, guid: 54fc4a62ccb7e304f910c5444e778f6b, type: 3}
+      propertyPath: rightDoorCollider
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 2611527727471231512, guid: 54fc4a62ccb7e304f910c5444e778f6b, type: 3}
+      propertyPath: leftDoor
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 2611527727471231512, guid: 54fc4a62ccb7e304f910c5444e778f6b, type: 3}
+      propertyPath: rightDoor
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 2611527727471231512, guid: 54fc4a62ccb7e304f910c5444e778f6b, type: 3}
+      propertyPath: leftDoorCollider
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 2611527727471231512, guid: 54fc4a62ccb7e304f910c5444e778f6b, type: 3}
       propertyPath: rightDoorCollider
       value: 
       objectReference: {fileID: 0}

@@ -33,7 +33,7 @@ public class IntroPhoneSequence : MonoBehaviour
 	{
 		// 1. Speler bevriezen
 		if (playerMovementScript != null) playerMovementScript.enabled = false;
-		
+
 		if (flashlight != null) flashlight.enabled = false;
 
 		// 2. Camera naar beneden
@@ -54,6 +54,10 @@ public class IntroPhoneSequence : MonoBehaviour
 			if (Input.GetKeyDown(KeyCode.Tab))
 			{
 				StartTheShow();
+			
+				// Comment the above and uncomment below to skip intro
+				// PutPhoneAway();
+				// if (flashlight != null) flashlight.enabled = true;
 			}
 		}
 	}
