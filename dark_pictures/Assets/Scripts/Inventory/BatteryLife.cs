@@ -11,10 +11,13 @@ public class BatteryLife : MonoBehaviour
     public bool isDecreasingOverTime = false;
 
     [SerializeField] FlashIndicator flashIndicator;
+    [SerializeField] AudioClip emptyClip;
+    private AudioSource audioSource;
 
     void Start()
     {
         rend = GetComponent<Renderer>();
+        audioSource = transform.GetComponent<AudioSource>();
     }
     private void SetBatteryColor(ObjectColor color)
     {
@@ -32,10 +35,15 @@ public class BatteryLife : MonoBehaviour
         float newZ = transform.localScale.z - amount;
 
         if (newZ < -0.5f)
+        {
             return false;
+        }
 
         if (newZ <= 0f)
+        {
             SetNewBatteryLife(-1);
+            audioSource.PlayOneShot(emptyClip);
+        }
         else SetNewBatteryLife(newZ);
 
         return true;

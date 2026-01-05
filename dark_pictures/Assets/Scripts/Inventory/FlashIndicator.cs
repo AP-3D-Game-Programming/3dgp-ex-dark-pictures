@@ -8,6 +8,7 @@ public class FlashIndicator : MonoBehaviour
     float cooldownTime = 0;
     ObjectColor color;
     Renderer rend;
+    [SerializeField] BatteryLife batteryLife;
     void Start()
     {
         color = ObjectColor.GREEN;
@@ -26,7 +27,8 @@ public class FlashIndicator : MonoBehaviour
         {
             yield return new WaitForSeconds(1f);
         }
-        SetColor(ObjectColor.GREEN);
+        if (batteryLife.GetBatteryLife() > -0.5f)
+            SetColor(ObjectColor.GREEN);
     }
 
     public void SetColor(ObjectColor color)

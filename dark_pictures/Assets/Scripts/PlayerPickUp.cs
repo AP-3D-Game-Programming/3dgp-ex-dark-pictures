@@ -16,12 +16,18 @@ public class PlayerPickUp : MonoBehaviour
     [Header("Interaction UI")]
     [SerializeField] GameObject interactionUI;
     [SerializeField] TextMeshProUGUI interactionText;
+    [SerializeField] AudioClip equipClip;
+    private AudioSource audioSource;
 
     List<string> inventoryTags = new List<string>()
     {
         "Key",
         "Battery",
     };
+    void Start()
+    {
+        audioSource = transform.GetComponent<AudioSource>();
+    }
 
     // Update is called once per frame
     void Update()
@@ -93,6 +99,7 @@ public class PlayerPickUp : MonoBehaviour
                 if (Input.GetKeyDown(KeyCode.E))
                 {
                     inventory.AddObject(obj.transform);
+                    audioSource.PlayOneShot(equipClip);
                     HidePrompt(); // Hide immediately as object will be disabled/moved
                 }
             }

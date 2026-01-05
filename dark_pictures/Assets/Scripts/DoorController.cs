@@ -15,6 +15,9 @@ public class DoorController : MonoBehaviour
     bool isOpen, playerNearby;
     Vector3 closedPos, targetPos;
     Transform player;
+    [SerializeField] AudioClip lockedClip;
+    [SerializeField] AudioClip unlockedClip;
+    private AudioSource audioSource;
 
     void Start()
     {
@@ -22,6 +25,7 @@ public class DoorController : MonoBehaviour
         closedPos = doorTransform.position;
         targetPos = closedPos + openOffset;
         player = GameObject.FindGameObjectWithTag("Player")?.transform;
+        audioSource = transform.GetComponent<AudioSource>();
     }
 
     void Update()
@@ -33,8 +37,14 @@ public class DoorController : MonoBehaviour
         {
             isOpen = true;
             ShowText("Door unlocked!");
+            // audioSource.PlayOneShot(unlockedClip);
         }
-        else ShowText("Door is locked!");
+        else
+        {
+            ShowText("Door is locked!");
+            // audioSource.PlayOneShot(lockedClip);
+        }
+
     }
 
     void LateUpdate()

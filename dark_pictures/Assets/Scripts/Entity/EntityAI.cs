@@ -7,11 +7,11 @@ public class EntityAI : MonoBehaviour
     [Header("Smart Patrol")]
     public int maxPatrolMemory = 5;
     private System.Collections.Generic.List<Vector3> visitedPatrolPoints = new System.Collections.Generic.List<Vector3>();
-    
+
     [Header("Sound Detection")]
     public float soundDetectionRange = 15f;
     public float minPlayerSpeedToHear = 5f; // Sprint speed threshold
-    
+
     [Header("References")]
     public Transform player;
     public Light playerFlashLight;
@@ -47,10 +47,12 @@ public class EntityAI : MonoBehaviour
     private bool isStunned = false;
 
     private Color originalColor;
-    private Color stunColor = Color.yellow; 
+    private Color stunColor = Color.yellow;
     public float stunBrightness = 5f;
 
     [SerializeField] GameManager gameManager;
+    [SerializeField] AudioClip screamClip;
+    private AudioSource audioSource;
 
     void Start()
     {
@@ -69,7 +71,7 @@ public class EntityAI : MonoBehaviour
                 eyeLight.range = 2f;
             }
         }
-
+        audioSource = GetComponent<AudioSource>();
         SetNewPatrolPoint();
     }
 
@@ -102,7 +104,7 @@ public class EntityAI : MonoBehaviour
     {
         float distanceToPlayer = Vector3.Distance(transform.position, player.position);
         if (distanceToPlayer > soundDetectionRange) return false;
-        
+
         // Check if player is moving fast (sprinting)
         PlayerController pc = player.GetComponent<PlayerController>();
         if (pc != null)
@@ -115,7 +117,7 @@ public class EntityAI : MonoBehaviour
                 return true;
             }
         }
-        
+
         return false;
     }
 
@@ -258,10 +260,10 @@ public class EntityAI : MonoBehaviour
         isChasing = false;
         isInvestigating = true;
         investigateTimer = investigationTime;
-        
+
         // Go to last known position
         agent.SetDestination(lastKnownPlayerPosition);
-        
+
         Debug.Log("Lost player! Investigating last known position...");
     }
 
@@ -285,7 +287,7 @@ public class EntityAI : MonoBehaviour
                         break;
                     }
                 }
-                
+
                 if (tooCloseToRecent) continue;
 
                 NavMeshPath path = new NavMeshPath();
@@ -320,11 +322,13 @@ public class EntityAI : MonoBehaviour
         Gizmos.color = Color.cyan;
         Gizmos.DrawWireSphere(transform.position, soundDetectionRange);
     }
-    
+
     void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.CompareTag("Player"))
         {
+            if (!gameManager.isGameOver)
+                audioSource.PlayOneShot(screamClip);
             gameManager.GameOver();
         }
     }

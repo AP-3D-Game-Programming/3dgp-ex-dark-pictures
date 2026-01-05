@@ -19,13 +19,15 @@ public class Inventory : MonoBehaviour
     [SerializeField] GameObject ItemUIPrefab;
     [SerializeField] PlayerPhoneSystem PhoneSystem;
     [SerializeField] BatteryLife BatteryLife;
-
+    [SerializeField] AudioClip batteryUsingClip;
+    private AudioSource audioSource;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         items = new Dictionary<string, List<GameObject>>();
         itemsKeys = new Dictionary<string, KeyCode>();
+        audioSource = transform.GetComponent<AudioSource>();
     }
     void Update()
     {
@@ -203,6 +205,7 @@ public class Inventory : MonoBehaviour
         if (!RemoveObject("Battery"))
             return false;
 
+        audioSource.PlayOneShot(batteryUsingClip);
         BatteryLife.RenewBattery();
         return true;
     }

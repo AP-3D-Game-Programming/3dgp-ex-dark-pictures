@@ -29,6 +29,7 @@ public class CameraFlash : MonoBehaviour
 
 	[SerializeField] private float smallFlashlightIntensity = 0.5f;
 	[SerializeField] private float smallFlashlightPowerConsumption = 2f;
+    [SerializeField] AudioClip errorClip;
 
 	private bool isSmallFlashlightOn = false;
 
@@ -111,7 +112,11 @@ public class CameraFlash : MonoBehaviour
 				batteryLife.DecreaseBattery(batteryDecreasingAmount);
 				flashIndicator.SetCooldown(flashCooldown);
 			}
-			else return;
+			else
+			{
+				audioSource.PlayOneShot(errorClip);
+				return;
+			}
 		}
 
 		flashLight.intensity = flashPower;
