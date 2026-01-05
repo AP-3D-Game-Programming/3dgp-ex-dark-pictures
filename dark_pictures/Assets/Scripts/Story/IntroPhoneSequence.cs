@@ -99,7 +99,7 @@ public class IntroPhoneSequence : MonoBehaviour
 		yield return new WaitForSeconds(0.5f);
 
 		AddText("- Enter the Facility", false);
-		AddText("- Find Evidence (Photos: 0/10)", false);
+		AddText("- Get a picture of the monster", false);
 
 		yield return new WaitForSeconds(readTime);
 
