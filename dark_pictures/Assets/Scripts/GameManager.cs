@@ -1,3 +1,4 @@
+using NUnit.Framework.Constraints;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -10,7 +11,7 @@ public class GameManager : MonoBehaviour
 	public GameObject realMonster;
 
 	public bool isGameOver = false;
-	
+
 	void Start()
 	{
 		if (endScreen != null) endScreen.SetActive(false);
@@ -39,6 +40,7 @@ public class GameManager : MonoBehaviour
 		isGameOver = true;
 
 		if (endScreen != null) endScreen.SetActive(true);
+		endScreen.transform.SetAsLastSibling();
 
 		Cursor.lockState = CursorLockMode.None;
 		Cursor.visible = true;
@@ -51,6 +53,6 @@ public class GameManager : MonoBehaviour
 		Cursor.lockState = CursorLockMode.None;
 		Cursor.visible = true;
 	}
-	public void SetGameObjectUnActive(GameObject gameObject) =>	gameObject.SetActive(false);
-	public void SetGameObjectActive(GameObject gameObject) =>	gameObject.SetActive(true);
+	public void SetGameObjectUnActive(GameObject gameObject) => gameObject.SetActive(false);
+	public void SetGameObjectActive(GameObject gameObject) => gameObject.SetActive(true);
 }

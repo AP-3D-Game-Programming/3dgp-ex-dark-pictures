@@ -14927,6 +14927,10 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 6
       objectReference: {fileID: 0}
+    - target: {fileID: 4918012654386282432, guid: 2ceb455c17490284aac8af5a3dfa3169, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5107649972468482668, guid: 2ceb455c17490284aac8af5a3dfa3169, type: 3}
       propertyPath: m_TagString
       value: Door
@@ -15010,6 +15014,10 @@ PrefabInstance:
     - target: {fileID: 7872183794373152011, guid: 2ceb455c17490284aac8af5a3dfa3169, type: 3}
       propertyPath: m_TagString
       value: Door
+      objectReference: {fileID: 0}
+    - target: {fileID: 8272346615234430237, guid: 2ceb455c17490284aac8af5a3dfa3169, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8385575925059270478, guid: 2ceb455c17490284aac8af5a3dfa3169, type: 3}
       propertyPath: m_LocalPosition.x
@@ -15620,6 +15628,7 @@ GameObject:
   - component: {fileID: 1078775270}
   - component: {fileID: 1078775269}
   - component: {fileID: 1078775268}
+  - component: {fileID: 1078775271}
   m_Layer: 5
   m_Name: EndScreenMonster
   m_TagString: Untagged
@@ -15664,7 +15673,7 @@ VideoPlayer:
   m_TargetMaterialProperty: <noninit>
   m_RenderMode: 2
   m_AspectRatio: 2
-  m_DataSource: 0
+  m_DataSource: 1
   m_TimeUpdateMode: 2
   m_PlaybackSpeed: 3
   m_AudioOutputMode: 2
@@ -15672,7 +15681,7 @@ VideoPlayer:
   - {fileID: 0}
   m_DirectAudioVolumes:
   - 1
-  m_Url: file://C:/Users/yazan/Desktop/Dark picture/dark_pictures/Assets/Video/monsterVideo.mp4
+  m_Url: 
   m_EnabledAudioTracks: 01
   m_DirectAudioMutes: 00
   m_ControlledAudioTrackCount: 1
@@ -15717,6 +15726,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1078775266}
   m_CullTransparentMesh: 1
+--- !u!114 &1078775271
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1078775266}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: be7c198716d885a409b3631845b5692a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::VideoPlayer
+  videoFileName: monsterVideo.mp4
 --- !u!1001 &1083598947
 PrefabInstance:
   m_ObjectHideFlags: 0
