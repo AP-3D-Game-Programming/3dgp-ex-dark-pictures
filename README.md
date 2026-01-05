@@ -1,5 +1,7 @@
 # 3dgp-ex-dark-pictures
 
+[Dark Pictures on itch.io](https://xyuujii.itch.io/dark-pictures)
+
 # Genre
 Survival horror
 
